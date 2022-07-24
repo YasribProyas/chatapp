@@ -1,63 +1,33 @@
-import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import { useState } from "react";
 
 import "./App.css";
+import MessagePage from "./pages/MessagePage";
+import { io } from "socket.io-client";
 
 const socket = io("localhost:3000");
 
 export default function App() {
-  const [msgInput, setMsgInput] = useState("");
-  const [msgList, setMsgList] = useState([]);
-  const list = [];
   const params = new URLSearchParams(location.search);
+  const [joined, setJoined] = useState(false);
 
-  useEffect(() => {
-    socket.on("GetMessage", (msg, id) => {
-      list.push({ text: msg, id });
-      setMsgList([...list]); //{ text: msg, id }
-    });
-  }, []);
-
-  // useEffect(()=>{
-
-  // }, [msgList])
-
-  const onMsgSend = () => {
-    if (!msgInput) return;
-    console.log("sending ", msgInput);
-    socket.emit("SendMessage", msgInput);
-    setMsgInput("");
+  const join = () => {
+    socket.connect();
+    socket.emit("joinRoom", params.get("name"), params.get("room"));
+    setJoined(true);
   };
-
-  const onMsgchange = (e) => {
-    setMsgInput(e.target.value);
+  const leave = () => {
+    socket.disconnect();
+    setJoined(false);
   };
 
   return (
     <div className="App">
-      <section className="message-section">
-        <h3>Messages:{socket.id}</h3>
-        <div className="messagees">
-          {msgList.map((msg, i) => (
-            <div className="message" key={i}>
-              <div className="name">{msg.id}</div>
-              <p className="message-text">{msg.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="message-input-section">
-        <input
-          type="text"
-          className="message-input-field"
-          value={msgInput}
-          onChange={onMsgchange}
-        />
-        <button className="message-input-button" onClick={onMsgSend}>
-          send
-        </button>
-      </section>
+      {joined ? (
+        <button onClick={leave}>leave</button>
+      ) : (
+        <button onClick={join}>join</button>
+      )}
+      {joined && <MessagePage socket={socket} />}
     </div>
   );
 }
