@@ -1,0 +1,15 @@
+.name{
+    font-size: .5rem;
+    color: gray;
+}
+
+.message-text{
+    margin: 0;
+}
+
+.message{
+    margin: 1rem;
+    border-left: 3px solid lightgray;
+    padding-left: .5rem;
+}
+
