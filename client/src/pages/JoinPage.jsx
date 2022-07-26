@@ -4,31 +4,32 @@ import { Button, TextField } from "@mui/material";
 
 import RandomPhotoRadio from "../components/RandomPhotoRadio";
 
+const userInfo = {
+  name: "",
+  imgType: "Random",
+  randomImg: "set1",
+  url: null,
+};
+const roomInfo = {
+  name: null,
+  id: null,
+  imgType: "Random",
+  randomImg: "set1",
+  url: null,
+};
+
 export default function JoinPage({ socket, setJoined }) {
   const [userReady, setUserReady] = useState(false);
   const [roomIdReady, setRoomIdReady] = useState(false);
   const [roomCreateReady, setRoomCreateReady] = useState(false);
 
-  const userInfo = {
-    name: null,
-    imgType: "Random",
-    randomImg: "set1",
-    url: null,
-  };
-  const roomInfo = {
-    name: null,
-    id: null,
-    imgType: "Random",
-    randomImg: "set1",
-    url: null,
-  };
-
   const join = () => {
-    socket = io(process.env.backend || "localhost:3000");
+    socket = io(import.meta.env.backend || "localhost:3000");
     socket.connect();
     // socket.emit("joinRoom", params.get("name"), params.get("room"));
     socket.emit("joinRoom", userInfo, roomInfo);
-    socket.on("joinedRoom", () => {
+    socket.on("joinedRoom", (room) => {
+      console.log(room);
       setJoined(true);
     });
   };
@@ -38,6 +39,7 @@ export default function JoinPage({ socket, setJoined }) {
       <section className="user-section">
         <h2>User</h2>
         <h4>Username</h4>
+
         <TextField
           label="Name"
           onChange={(e) => {
@@ -49,11 +51,13 @@ export default function JoinPage({ socket, setJoined }) {
             }
           }}
         />
+
         <RandomPhotoRadio choices={userInfo} />
       </section>
       <section className="join-section">
         <h2>Room</h2>
         <h4>Join</h4>
+
         <TextField
           label="ID"
           onChange={(e) => {
@@ -63,9 +67,10 @@ export default function JoinPage({ socket, setJoined }) {
             } else {
               setRoomIdReady(false);
             }
-            console.log(userReady, roomIdReady);
+            console.log(userInfo, roomInfo);
           }}
         />
+
         <Button
           variant="contained"
           size="small"
@@ -74,6 +79,7 @@ export default function JoinPage({ socket, setJoined }) {
         >
           Join with id
         </Button>
+
         <h6>-- or --</h6>
         <h4>Create</h4>
         <TextField
@@ -98,6 +104,7 @@ export default function JoinPage({ socket, setJoined }) {
         >
           Create and join
         </Button>
+
         <RandomPhotoRadio choices={roomInfo} />
       </section>
       {/* <Fab color="primary" aria-label="Join" className="fab-join">

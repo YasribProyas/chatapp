@@ -20,8 +20,11 @@ export default function App() {
 
   return (
     <div className="App">
-      {/* <JoinPage socket={socket} setJoined={setJoined} /> */}
-      <MessagePage socket={socket} />
+      {joined ? (
+        <MessagePage socket={socket} />
+      ) : (
+        <JoinPage socket={socket} setJoined={setJoined} />
+      )}
     </div>
   );
 }

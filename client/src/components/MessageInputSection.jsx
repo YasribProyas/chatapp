@@ -1,3 +1,4 @@
+import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 
 export default function MessageInputSection({ socket }) {
@@ -14,15 +15,19 @@ export default function MessageInputSection({ socket }) {
 
   return (
     <section className="message-input-section">
-      <input
+      <TextField
         type="text"
         className="message-input-field"
         value={msgInput}
         onChange={onMsgchange}
       />
-      <button className="message-input-button" onClick={onMsgSend}>
+      <Button
+        varient="contained"
+        className="message-input-button"
+        onClick={onMsgSend}
+      >
         send
-      </button>
+      </Button>
     </section>
   );
 }

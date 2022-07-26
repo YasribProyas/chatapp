@@ -16,21 +16,33 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log('a user connected ' + socket.id);
 
-    socket.on("joinRoom", (username, roomId) => {
-        const user = new User(socket.id, username, roomId);
+    socket.on("joinRoom", (userInfo, roomInfo) => {
+
+        console.log(userInfo, roomInfo);
+
+        const user = new User(socket.id, userInfo.name, roomInfo.id);
 
         users.set(user.id, user);
 
-        if (!rooms.has(roomId)) {
-            rooms.set(roomId, new Room(roomId, "yoyo"));
-        }
-        rooms.get(roomId).users.set(user.id, user);
-        socket.join(roomId);
+        if (!roomInfo.id) {
+            if (!roomInfo.name) { socket.emit("joinFailed"); return; }
 
-        io.to(roomId).emit("GetMessage", user.username + " joined", null);
+            roomInfo.id = roomInfo.name.trim().replace(" ", "") + Math.floor(Math.random() * 100000);
+            rooms.set(roomInfo.id, new Room(roomInfo.id, roomInfo.name, roomInfo.img));
+        }
+
+        if (!rooms.has(roomInfo.id)) { socket.emit("joinFailed"); return; }
+
+        user.roomId = roomInfo.id;
+        rooms.get(roomInfo.id).users.set(user.id, user);
+        socket.join(roomInfo.id);
+
+        socket.emit("joinedRoom", rooms.get(roomInfo.id));
+        io.to(roomInfo.id).emit("GetMessage", user.username + " joined", null);
 
         console.log(user.id + " joined " + user.roomId);
-    })
+
+    });
 
 
     socket.on("SendMessage", (msgInput) => {
@@ -57,16 +69,34 @@ io.on('connection', (socket) => {
 
 
 class Room {
-    constructor(id, name) {
-        this.id = id; this.name = name;
+    constructor(id, name, img) {
+        this.id = id;
+        this.name = name;
+        this.img = img;
     }
     users = new Map;
 }
 class User {
-    constructor(id, username, roomId) {
+    constructor(id, username, img, roomId) {
         this.id = id;
         this.username = username;
         this.roomId = roomId;
+        this.img = img;
     }
-
 }
+
+/*
+const userInfo = {
+  name: "",
+  imgType: "Random",
+  randomImg: "set1",
+  url: null,
+};
+const roomInfo = {
+  name: null,
+  id: null,
+  imgType: "Random",
+  randomImg: "set1",
+  url: null,
+};
+*/
