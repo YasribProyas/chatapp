@@ -37,7 +37,7 @@ export default function RandomPhotoRadio({ choices }) {
           <FormControlLabel value="Random" control={<Radio />} label="Random" />
           <RadioGroup
             aria-labelledby="random-dp-optoins"
-            defaultValue="Robot"
+            defaultValue="set1"
             name="random-dp-optoins"
             row
             className="dp-radio"

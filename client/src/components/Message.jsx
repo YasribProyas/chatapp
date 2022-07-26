@@ -1,8 +1,13 @@
+import { Avatar } from "@mui/material";
+
 export default function Message({ msg }) {
   return (
-    <div className="message">
-      <div className="name">{msg.username}</div>
-      <p className="message-text">{msg.text}</p>
+    <div className="message message-self">
+      <Avatar src={msg.photo} alt={"dp of " + msg.username} />
+      <div className="message-text-area">
+        <div className="name">{msg.username}</div>
+        <p className="message-text">{msg.text}</p>
+      </div>
     </div>
   );
 }

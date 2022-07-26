@@ -2,7 +2,14 @@ img{
     max-width: 150px;
 }
 
+.App{
+    display: flex;
+    justify-content: center;
+}
 
+.message-section{
+    width: 50rem;
+}
 
 .name{
     font-size: .5rem;
@@ -12,12 +19,29 @@ img{
 .message-text{
     margin: 0;
 }
-
+.message-text-area{
+    margin-left: 1rem;
+}
 .message{
     margin: 1rem;
-    border-left: 3px solid lightgray;
+    /* border-left: 3px solid lightgray; */
     padding-left: .5rem;
+
+    display: flex;
+    align-items: center;
 }
+.messages{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.message-self{
+    align-self: flex-end;
+}
+.MuiAvatar-circular{
+    border: 2px solid gray;
+}
+
 
 
 /* Join Section */

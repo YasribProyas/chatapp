@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { io } from "socket.io-client";
 
 import { Button, Fab, Paper } from "@mui/material";
 import "./App.css";
@@ -21,7 +20,8 @@ export default function App() {
 
   return (
     <div className="App">
-      <JoinPage socket={socket} setJoined={setJoined} />
+      {/* <JoinPage socket={socket} setJoined={setJoined} /> */}
+      <MessagePage socket={socket} />
     </div>
   );
 }

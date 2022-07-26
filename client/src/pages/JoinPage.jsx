@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { io } from "socket.io-client";
 import { Button, TextField } from "@mui/material";
 
 import RandomPhotoRadio from "../components/RandomPhotoRadio";
@@ -27,7 +28,9 @@ export default function JoinPage({ socket, setJoined }) {
     socket.connect();
     // socket.emit("joinRoom", params.get("name"), params.get("room"));
     socket.emit("joinRoom", userInfo, roomInfo);
-    setJoined(true);
+    socket.on("joinedRoom", () => {
+      setJoined(true);
+    });
   };
 
   return (
@@ -39,7 +42,7 @@ export default function JoinPage({ socket, setJoined }) {
           label="Name"
           onChange={(e) => {
             userInfo.name = e.target.value;
-            if (userInfo.length > 0) {
+            if (userInfo.name.length > 0) {
               setUserReady(true);
             } else {
               setUserReady(false);
@@ -55,14 +58,20 @@ export default function JoinPage({ socket, setJoined }) {
           label="ID"
           onChange={(e) => {
             roomInfo.id = e.target.value;
-            if (roomInfo.id > 0) {
+            if (roomInfo.id.length > 0) {
               setRoomIdReady(true);
             } else {
               setRoomIdReady(false);
             }
+            console.log(userReady, roomIdReady);
           }}
         />
-        <Button onClick={join} disabled={!userReady && !roomIdReady}>
+        <Button
+          variant="contained"
+          size="small"
+          onClick={join}
+          disabled={!userReady || !roomIdReady}
+        >
           Join with id
         </Button>
         <h6>-- or --</h6>
@@ -71,7 +80,7 @@ export default function JoinPage({ socket, setJoined }) {
           label="Name"
           onChange={(e) => {
             roomInfo.name = e.target.value;
-            if (roomInfo.name > 0) {
+            if (roomInfo.name.length > 0) {
               setRoomCreateReady(true);
             } else {
               setRoomCreateReady(false);
@@ -79,11 +88,13 @@ export default function JoinPage({ socket, setJoined }) {
           }}
         />
         <Button
+          variant="contained"
+          size="small"
           onClick={() => {
             roomInfo.id = null;
             join();
           }}
-          disabled={!userReady && !roomCreateReady}
+          disabled={!userReady || !roomCreateReady}
         >
           Create and join
         </Button>
