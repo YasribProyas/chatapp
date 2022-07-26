@@ -14,12 +14,6 @@ export default function App() {
   const params = new URLSearchParams(location.search);
   const [joined, setJoined] = useState(false);
 
-  const join = () => {
-    socket = io("localhost:3000");
-    socket.connect();
-    socket.emit("joinRoom", params.get("name"), params.get("room"));
-    setJoined(true);
-  };
   const leave = () => {
     socket.disconnect();
     setJoined(false);
@@ -27,10 +21,7 @@ export default function App() {
 
   return (
     <div className="App">
-      <JoinPage />
-      <Fab color="primary" aria-label="Join" className="fab-join" disabled>
-        <h3>Join</h3>
-      </Fab>
+      <JoinPage socket={socket} setJoined={setJoined} />
     </div>
   );
 }

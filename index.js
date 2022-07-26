@@ -2,15 +2,14 @@ import express from "express";
 import { Server } from "socket.io";
 
 const app = express();
-const server = app.listen(3000);
+const server = app.listen(process.env.port || 3000);
 
 const rooms = new Map();
 const users = new Map();
 
 const io = new Server(server, {
     cors: {
-        origin: "http://127.0.0.1:5173",
-        methods: ["GET", "POST"]
+        origin: process.env.client || "http://127.0.0.1:5173"
     }
 });
 

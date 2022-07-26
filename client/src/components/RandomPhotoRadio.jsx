@@ -9,12 +9,19 @@ import {
 
 import RadioCard from "./RadioCard";
 
-export default function RandomPhotoRadio() {
+export default function RandomPhotoRadio({ choices }) {
   const [customDpUrl, setCustomDpUrl] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
   const customUrlFieldChange = (e) => {
     setCustomDpUrl(e.target.value);
+    choices.url = customDpUrl;
+  };
+  const onImgTypeChange = (e) => {
+    choices.imgType = e.target.value;
+  };
+  const onRandomImgSetChange = (e) => {
+    choices.randomImg = e.target.value;
   };
 
   return (
@@ -24,6 +31,7 @@ export default function RandomPhotoRadio() {
         aria-labelledby="dp-optoins"
         defaultValue="Random"
         name="dp-optoins"
+        onChange={onImgTypeChange}
       >
         <div id="photo-random">
           <FormControlLabel value="Random" control={<Radio />} label="Random" />
@@ -33,27 +41,28 @@ export default function RandomPhotoRadio() {
             name="random-dp-optoins"
             row
             className="dp-radio"
+            onChange={onRandomImgSetChange}
           >
             <FormControlLabel
-              value="Robot"
+              value="set1"
               control={<RadioCard />}
               label="Robot"
               labelPlacement="bottom"
             />
             <FormControlLabel
-              value="Cat"
+              value="set4"
               control={<RadioCard set={4} />}
               label="Cat"
               labelPlacement="bottom"
             />
             <FormControlLabel
-              value="Monster"
+              value="set2"
               control={<RadioCard set={2} />}
               label="Monster"
               labelPlacement="bottom"
             />
             <FormControlLabel
-              value="Human"
+              value="set5"
               control={<RadioCard set={5} />}
               label="Human"
               labelPlacement="bottom"
