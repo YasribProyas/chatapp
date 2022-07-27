@@ -18,9 +18,9 @@ io.on('connection', (socket) => {
 
     socket.on("joinRoom", (userInfo, roomInfo) => {
 
-        console.log(userInfo, roomInfo);
+        console.log(userInfo, "\n", roomInfo);
 
-        const user = new User(socket.id, userInfo.name, roomInfo.id);
+        const user = new User(socket.id, userInfo.name, userInfo.url, roomInfo.id);
 
         users.set(user.id, user);
 
@@ -37,19 +37,21 @@ io.on('connection', (socket) => {
         rooms.get(roomInfo.id).users.set(user.id, user);
         socket.join(roomInfo.id);
 
-        socket.emit("joinedRoom", rooms.get(roomInfo.id));
-        io.to(roomInfo.id).emit("GetMessage", user.username + " joined", null);
+        socket.emit("joinedRoom", rooms.get(roomInfo.id), user);
+        io.to(roomInfo.id).emit("GetMessage", new Message(user, user.username + " joined"));
 
         console.log(user.id + " joined " + user.roomId);
 
     });
 
 
+
     socket.on("SendMessage", (msgInput) => {
         const user = users.get(socket.id);
         if (!user) return;
 
-        io.to(user.roomId).emit("GetMessage", msgInput, user.username);
+        const msg = new Message(user, msgInput)
+        io.to(user.roomId).emit("GetMessage", msg);
     });
 
     socket.on("disconnect", (reason) => {
@@ -73,8 +75,9 @@ class Room {
         this.id = id;
         this.name = name;
         this.img = img;
+        this.users = new Map;
+        this.messages = [];
     }
-    users = new Map;
 }
 class User {
     constructor(id, username, img, roomId) {
@@ -82,6 +85,15 @@ class User {
         this.username = username;
         this.roomId = roomId;
         this.img = img;
+    }
+}
+
+class Message {
+    constructor(user, text) {
+        this.username = user.username;
+        this.id = user.id;
+        this.photo = user.img;
+        this.text = text;
     }
 }
 
