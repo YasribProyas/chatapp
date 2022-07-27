@@ -6,24 +6,32 @@ import "./App.css";
 import MessagePage from "./pages/MessagePage";
 import JoinPage from "./pages/JoinPage";
 import RandomPhotoRadio from "./components/RandomPhotoRadio";
-
-let socket;
+import { useRef } from "react";
 
 export default function App() {
   const params = new URLSearchParams(location.search);
   const [joined, setJoined] = useState(false);
 
-  const leave = () => {
-    socket.disconnect();
-    setJoined(false);
-  };
+  const socket = useRef(null);
+  const room = useRef(null);
+  const user = useRef(null);
 
   return (
     <div className="App">
       {joined ? (
-        <MessagePage socket={socket} />
+        <MessagePage
+          socket={socket.current}
+          setJoined={setJoined}
+          room={room.current}
+          user={user.current}
+        />
       ) : (
-        <JoinPage socket={socket} setJoined={setJoined} />
+        <JoinPage
+          socket={socket}
+          setJoined={setJoined}
+          room={room}
+          user={user}
+        />
       )}
     </div>
   );

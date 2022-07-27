@@ -5,7 +5,7 @@ import { Button, TextField } from "@mui/material";
 import RandomPhotoRadio from "../components/RandomPhotoRadio";
 
 const userInfo = {
-  name: "",
+  name: null,
   imgType: "Random",
   randomImg: "set1",
   url: null,
@@ -18,18 +18,34 @@ const roomInfo = {
   url: null,
 };
 
-export default function JoinPage({ socket, setJoined }) {
+export default function JoinPage({ socket, setJoined, room, user }) {
   const [userReady, setUserReady] = useState(false);
   const [roomIdReady, setRoomIdReady] = useState(false);
   const [roomCreateReady, setRoomCreateReady] = useState(false);
 
   const join = () => {
-    socket = io(import.meta.env.backend || "localhost:3000");
+    socket.current = io(import.meta.env.backend || "localhost:3000");
+    socket = socket.current;
     socket.connect();
     // socket.emit("joinRoom", params.get("name"), params.get("room"));
+    userInfo.url =
+      "https://robohash.org/" +
+      userInfo.name +
+      "?set=" +
+      userInfo.randomImg +
+      "?size=100x100";
+    roomInfo.url =
+      "https://robohash.org/" +
+      roomInfo.name +
+      "?set=" +
+      roomInfo.randomImg +
+      "?size=100x100";
+
     socket.emit("joinRoom", userInfo, roomInfo);
-    socket.on("joinedRoom", (room) => {
-      console.log(room);
+    socket.on("joinedRoom", (joinedRoom, joinedUser) => {
+      room.current = joinedRoom;
+      user.current = joinedUser;
+      console.log(room, user);
       setJoined(true);
     });
   };
@@ -107,9 +123,6 @@ export default function JoinPage({ socket, setJoined }) {
 
         <RandomPhotoRadio choices={roomInfo} />
       </section>
-      {/* <Fab color="primary" aria-label="Join" className="fab-join">
-        <h3>Join</h3>
-      </Fab> */}
     </div>
   );
 }

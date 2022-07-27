@@ -1,6 +1,7 @@
 import { Avatar } from "@mui/material";
 
-export default function Message({ msg }) {
+export default function Message({ msg, self }) {
+  // <div className={"message" + self ? "self" : ""}>
   return (
     <div className="message">
       <Avatar src={msg.photo} alt={"dp of " + msg.username} />
