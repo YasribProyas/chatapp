@@ -24,7 +24,7 @@ export default function JoinPage({ socket, setJoined, room, user }) {
   const [roomCreateReady, setRoomCreateReady] = useState(false);
 
   const join = () => {
-    socket.current = io(import.meta.env.backend || "localhost:3000");
+    socket.current = io("localhost:3000");
     socket = socket.current;
     socket.connect();
     // socket.emit("joinRoom", params.get("name"), params.get("room"));

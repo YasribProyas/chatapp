@@ -1,11 +1,9 @@
 import { useState } from "react";
 
-import { Button, Fab, Paper } from "@mui/material";
 import "./App.css";
 
 import MessagePage from "./pages/MessagePage";
 import JoinPage from "./pages/JoinPage";
-import RandomPhotoRadio from "./components/RandomPhotoRadio";
 import { useRef } from "react";
 
 export default function App() {
