@@ -1,7 +1,7 @@
 import PhotoRadio from "./photoRadio";
 export default function UserForm() {
   return (
-    <form>
+    <section>
       <h1>User</h1>
       <div className="label-input-grp">
         <label htmlFor="name-input">Name</label>
@@ -19,6 +19,6 @@ export default function UserForm() {
       </div>
 
       <button type="submit">Next</button>
-    </form>
+    </section>
   );
 }

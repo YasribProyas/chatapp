@@ -1,73 +1,91 @@
-import express from "express";
+import express, { json } from "express";
+import cors from "cors";
 import { Server } from "socket.io";
 
 const app = express();
-const server = app.listen(3000);
+app.use(cors());
+app.use(json());
 
 const rooms = new Map();
 const users = new Map();
 
-const io = new Server(server, {
-    cors: {
-        origin: "*"
-    }
+app.get("/", (req, res) => {
+    res.send("root");
 });
-
-io.on('connection', (socket) => {
-    console.log('a user connected ' + socket.id);
-
-    socket.on("joinRoom", (userInfo, roomInfo) => {
-
-        console.log(userInfo, "\n", roomInfo);
-
-        const user = new User(socket.id, userInfo.name, userInfo.url, roomInfo.id);
-
-        users.set(user.id, user);
-
-        if (!roomInfo.id) {
-            if (!roomInfo.name) { socket.emit("joinFailed"); return; }
-
-            roomInfo.id = roomInfo.name.trim().replace(" ", "") + Math.floor(Math.random() * 100000);
-            rooms.set(roomInfo.id, new Room(roomInfo.id, roomInfo.name, roomInfo.img));
-        }
-
-        if (!rooms.has(roomInfo.id)) { socket.emit("joinFailed"); return; }
-
-        user.roomId = roomInfo.id;
-        rooms.get(roomInfo.id).users.set(user.id, user);
-        socket.join(roomInfo.id);
-
-        socket.emit("joinedRoom", rooms.get(roomInfo.id), user);
-        io.to(roomInfo.id).emit("GetMessage", new Message(user, user.username + " joined"));
-
-        console.log(user.id + " joined " + user.roomId);
-
-    });
-
-
-
-    socket.on("SendMessage", (msgInput) => {
-        const user = users.get(socket.id);
-        if (!user) return;
-
-        const msg = new Message(user, msgInput)
-        io.to(user.roomId).emit("GetMessage", msg);
-    });
-
-    socket.on("disconnect", (reason) => {
-        console.log(socket.id + " disconnected");
-        const user = users.get(socket.id);
-        if (!user) return;
-
-        rooms.get(users.get(socket.id).roomId).users.delete(socket.id);
-        users.delete(socket.id);
-
-        io.to(user.roomId).emit("GetMessage", user.username + " left", null);
-    });
-
+app.post("/login", (req, res) => {
+    console.log("req received");
+    console.log(req.body);
+    res.send("done");
+});
+app.post("/signup", (req, res) => {
+    console.log("req received");
+    console.log(req.body);
+    res.send("done");
 });
 
 
+const server = app.listen(3000, () => {
+    console.log("listening");
+});
+
+// const io = new Server(server, {
+//     cors: {
+//         origin: "*"
+//     }
+// });
+// io.on('connection', (socket) => {
+//     console.log('a user connected ' + socket.id);
+
+//     socket.on("joinRoom", (userInfo, roomInfo) => {
+
+//         console.log(userInfo, "\n", roomInfo);
+
+//         const user = new User(socket.id, userInfo.name, userInfo.url, roomInfo.id);
+
+//         users.set(user.id, user);
+
+//         if (!roomInfo.id) {
+//             if (!roomInfo.name) { socket.emit("joinFailed"); return; }
+
+//             roomInfo.id = roomInfo.name.trim().replace(" ", "") + Math.floor(Math.random() * 100000);
+//             rooms.set(roomInfo.id, new Room(roomInfo.id, roomInfo.name, roomInfo.img));
+//         }
+
+//         if (!rooms.has(roomInfo.id)) { socket.emit("joinFailed"); return; }
+
+//         user.roomId = roomInfo.id;
+//         rooms.get(roomInfo.id).users.set(user.id, user);
+//         socket.join(roomInfo.id);
+
+//         socket.emit("joinedRoom", rooms.get(roomInfo.id), user);
+//         io.to(roomInfo.id).emit("GetMessage", new Message(user, user.username + " joined"));
+
+//         console.log(user.id + " joined " + user.roomId);
+
+//     });
+
+
+
+//     socket.on("SendMessage", (msgInput) => {
+//         const user = users.get(socket.id);
+//         if (!user) return;
+
+//         const msg = new Message(user, msgInput)
+//         io.to(user.roomId).emit("GetMessage", msg);
+//     });
+
+//     socket.on("disconnect", (reason) => {
+//         console.log(socket.id + " disconnected");
+//         const user = users.get(socket.id);
+//         if (!user) return;
+
+//         rooms.get(users.get(socket.id).roomId).users.delete(socket.id);
+//         users.delete(socket.id);
+
+//         io.to(user.roomId).emit("GetMessage", user.username + " left", null);
+//     });
+
+// });
 
 
 class Room {
@@ -112,3 +130,4 @@ const roomInfo = {
   url: null,
 };
 */
+

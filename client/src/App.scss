@@ -4,10 +4,13 @@
 
 form {
   text-align: center;
-  margin: 4rem;
+  margin: auto;
+  margin-top: 4rem;
   padding: 2rem 4rem;
   border: 1px solid gray;
   border-radius: 16px;
+
+  width: fit-content;
 
   label {
     display: flex;
@@ -29,19 +32,21 @@ form {
       margin: 4px;
     }
   }
-  input[type="radio"] {
-    display: none;
-    &:checked + label {
-      border-color: blue;
-    }
-  }
-  input[type="text"] {
+  input[type="text"],
+  input[type="password"],
+  input[type="email"] {
     margin: 4px;
     padding: 4px;
     border: 1px solid black;
     border-radius: 4px;
     font-weight: bold;
     font-size: 16px;
+  }
+  input[type="radio"] {
+    display: none;
+    &:checked + label {
+      border-color: blue;
+    }
   }
   button[type="submit"] {
     background-color: transparent;
@@ -54,6 +59,7 @@ form {
 
   .label-input-grp {
     text-align: start;
+    margin-bottom: 1rem;
   }
   .label-radio-grp {
     display: flex;

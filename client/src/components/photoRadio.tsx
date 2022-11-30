@@ -9,7 +9,7 @@ export default function PhotoRadio({
   value,
   label,
   imgLink,
-  ...x
+  ...others
 }: PhotoRadioProps) {
   return (
     <div className="label-radio-grp">
@@ -18,7 +18,7 @@ export default function PhotoRadio({
         name="photo-type"
         id={value + "-radio"}
         value={value}
-        {...x}
+        {...others}
       ></input>
       <label htmlFor={value + "-radio"} className="photo-radio">
         <img src={imgLink} />
