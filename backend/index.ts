@@ -1,13 +1,31 @@
 import express, { json } from "express";
-import cors from "cors";
 import { Server } from "socket.io";
+import cors from "cors";
+import dotenv from "dotenv"; dotenv.config();
+import mongoose from "mongoose";
+
+import UserModel from "./models/UserModel";
+import { createUser } from "./controllers/userController";
+
+
 
 const app = express();
 app.use(cors());
 app.use(json());
 
-const rooms = new Map();
-const users = new Map();
+mongoose.connect(process.env.MONGODB_URI as string).then(val => {
+    // UserModel.create({
+    //     name: "pro",
+    //     email: "amail",
+    //     hash: "chichichi",
+    //     Photo: "noice"
+    // });
+    console.log("connected to mongoDB");
+
+});
+
+// const rooms = new Map();
+// const users = new Map();
 
 app.get("/", (req, res) => {
     res.send("root");
@@ -88,32 +106,32 @@ const server = app.listen(3000, () => {
 // });
 
 
-class Room {
-    constructor(id, name, img) {
-        this.id = id;
-        this.name = name;
-        this.img = img;
-        this.users = new Map;
-        this.messages = [];
-    }
-}
-class User {
-    constructor(id, username, img, roomId) {
-        this.id = id;
-        this.username = username;
-        this.roomId = roomId;
-        this.img = img;
-    }
-}
+// class Room {
+//     constructor(id, name, img) {
+//         this.id = id;
+//         this.name = name;
+//         this.img = img;
+//         this.users = new Map;
+//         this.messages = [];
+//     }
+// }
+// class User {
+//     constructor(id, username, img, roomId) {
+//         this.id = id;
+//         this.username = username;
+//         this.roomId = roomId;
+//         this.img = img;
+//     }
+// }
 
-class Message {
-    constructor(user, text) {
-        this.username = user.username;
-        this.id = user.id;
-        this.photo = user.img;
-        this.text = text;
-    }
-}
+// class Message {
+//     constructor(user, text) {
+//         this.id = user.id;
+//         this.username = user.username;
+//         this.photo = user.img;
+//         this.text = text;
+//     }
+// }
 
 /*
 const userInfo = {

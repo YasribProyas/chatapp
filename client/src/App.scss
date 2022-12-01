@@ -37,9 +37,11 @@ form {
   input[type="email"] {
     margin: 4px;
     padding: 4px;
+    width: 100%;
+    box-sizing: border-box;
     border: 1px solid black;
     border-radius: 4px;
-    font-weight: bold;
+    /* font-weight: bold; */
     font-size: 16px;
   }
   input[type="radio"] {
@@ -53,8 +55,9 @@ form {
     border: none;
     font-size: large;
     /* color: gray; */
-    margin-top: 4rem;
+    /* margin-top: 4rem; */
     font-weight: bold;
+    cursor: pointer;
   }
 
   .label-input-grp {

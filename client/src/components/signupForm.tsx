@@ -31,13 +31,23 @@ export default function SignupForm() {
       <label>Photo</label>
       <div className="radio-group">
         <PhotoRadio
-          value="robot"
-          imgLink="https://via.placeholder.com/50"
+          label="robot"
+          value="1"
+          imgLink="https://robohash.org/Proyas.png?set=set1"
           defaultChecked
         />
-        <PhotoRadio value="cat" imgLink="https://via.placeholder.com/50" />
-        <PhotoRadio value="dog" imgLink="https://via.placeholder.com/50" />
+        <PhotoRadio
+          label="cat"
+          value="4"
+          imgLink="https://robohash.org/Proyas.png?set=set4"
+        />
+        <PhotoRadio
+          label="human"
+          value="5"
+          imgLink="https://robohash.org/Proyas.png?set=set5"
+        />
       </div>
+      <br />
       <button type="submit">Next</button>
       <p>
         Already have an account?

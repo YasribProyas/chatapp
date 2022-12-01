@@ -25,7 +25,7 @@ export function formSubmit(e: FormEvent, callback: Function) {
 
 function login(formData: FormData, callback: Function) {
     const email: string = formData.get("email") as string;
-    const pass: string = formData.get("password") as string;
+    const password: string = formData.get("password") as string;
 
     fetch(backendUrl + "login", {
         method: "POST",
@@ -33,14 +33,15 @@ function login(formData: FormData, callback: Function) {
             'Accept': 'application/json',
             'Content-type': 'application/json'
         },
-        body: JSON.stringify({ email, pass })
+        body: JSON.stringify({ email, password })
     }).then(res => console.log("yoyo", res));
 }
 
 function signup(formData: FormData, callback: Function) {
+
     const email: string = formData.get("email") as string;
-    const pass: string = formData.get("password") as string;
-    const photoType: string = formData.get("photo-type") as string;
+    const password: string = formData.get("password") as string;
+    const photoType: string = formData.get("photoType") as string;
 
     fetch(backendUrl + "signup", {
         method: "POST",
@@ -48,6 +49,6 @@ function signup(formData: FormData, callback: Function) {
             'Accept': 'application/json',
             'Content-type': 'application/json'
         },
-        body: JSON.stringify({ email, pass, photoType })
+        body: JSON.stringify({ email, password, photoType })
     }).then(res => console.log("yoyo", res));
 }

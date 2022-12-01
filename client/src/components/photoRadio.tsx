@@ -15,7 +15,7 @@ export default function PhotoRadio({
     <div className="label-radio-grp">
       <input
         type="radio"
-        name="photo-type"
+        name="photoType"
         id={value + "-radio"}
         value={value}
         {...others}

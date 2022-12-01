@@ -27,6 +27,12 @@ export default function LoginForm() {
       <button type="submit" disabled={isSubmitting}>
         Login
       </button>
+      <br />
+      or
+      <br />
+      <button type="submit" disabled={isSubmitting}>
+        Login as a guest
+      </button>
       <p>
         Don't have an account?
         <Link to="/signup">Signup</Link>
