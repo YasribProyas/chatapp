@@ -1,54 +1,73 @@
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 
-const backendUrl: string = import.meta.env.VITE_BACKEND_URL
+const backendUrl: string = import.meta.env.VITE_BACKEND_URL;
 
 
-export function formSubmit(e: FormEvent, callback: Function) {
-    e.preventDefault();
-    const form: HTMLFormElement = e.target as HTMLFormElement;
-    const action: string = form.action.split("/").reverse()[0];
-    const formData = new FormData(form);
+export function useLogin() {
 
-    switch (action) {
-        case "login":
-            login(formData, callback)
-            break;
-        case "signup":
-            signup(formData, callback)
-            break;
+    const [error, setError] = useState<Error | null>();
+    const [isLoading, setIsLoading] = useState(false);
 
-        default:
-            break;
+    const signin = async (e: FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        const formData = new FormData(e.target as HTMLFormElement);
+
+        const email: string = formData.get("email") as string;
+        const password: string = formData.get("password") as string;
+
+        const userJWT = await fetch(backendUrl + "user/signin", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+            .then(res => res.json())
+            .catch(setError)
+            .finally(() => setIsLoading(false));
+
+
+        if (userJWT.error) {
+            return setError(Error(userJWT.error));
+        }
+        if (userJWT.token) localStorage.setItem("user", userJWT.token);
     }
-
+    return { signin, isLoading, error };
 }
 
-function login(formData: FormData, callback: Function) {
-    const email: string = formData.get("email") as string;
-    const password: string = formData.get("password") as string;
+export function useSignup() {
+    const [error, setError] = useState<Error | null>();
+    const [isLoading, setIsLoading] = useState(false);
 
-    fetch(backendUrl + "login", {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    }).then(res => console.log("yoyo", res));
-}
+    const signup = async (e: FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        const formData = new FormData(e.target as HTMLFormElement);
 
-function signup(formData: FormData, callback: Function) {
+        const name: string = formData.get("name") as string;
+        const email: string = formData.get("email") as string;
+        const password: string = formData.get("password") as string;
+        const photoType: string = formData.get("photoType") as string;
 
-    const email: string = formData.get("email") as string;
-    const password: string = formData.get("password") as string;
-    const photoType: string = formData.get("photoType") as string;
+        const userJWT = await fetch(backendUrl + "user/signup", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({ name, email, password, photoType })
+        })
+            .then(res => res.json())
+            .catch(setError)
+            .finally(() => setIsLoading(false));
 
-    fetch(backendUrl + "signup", {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ email, password, photoType })
-    }).then(res => console.log("yoyo", res));
+        if (userJWT.error) {
+            return setError(Error(userJWT.error));
+        }
+        if (userJWT.token) localStorage.setItem("user", userJWT.token);
+
+    }
+    return { signup, isLoading, error };
 }

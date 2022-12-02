@@ -1,19 +1,26 @@
-import { Link } from "react-router-dom";
-import { formSubmit } from "../util/formHandler";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { User } from "../interfaces/UserInterface";
+import { useSignup } from "../util/formHandler";
 import PhotoRadio from "./photoRadio";
 
-export default function SignupForm() {
-  const formSubmitCallback = () => {
-    console.log("responded");
-    // setIsSubmitting(true);
-  };
+interface signupFormPropInterface {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}
+
+export default function SignupForm({ user, setUser }: signupFormPropInterface) {
+  const { signup, isLoading, error } = useSignup();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/");
+    }
+  }, [isLoading]);
+
   return (
-    <form
-      action="signup"
-      onSubmit={(e) => {
-        formSubmit(e, formSubmitCallback);
-      }}
-    >
+    <form onSubmit={signup}>
       <h1>Signup</h1>
       <div className="label-input-grp">
         <label htmlFor="name-input">Name</label>
@@ -48,7 +55,9 @@ export default function SignupForm() {
         />
       </div>
       <br />
-      <button type="submit">Next</button>
+      <button type="submit" disabled={isLoading}>
+        Next
+      </button>
       <p>
         Already have an account?
         <Link to="/login">Login</Link>

@@ -5,7 +5,7 @@ import dotenv from "dotenv"; dotenv.config();
 import mongoose from "mongoose";
 
 import UserModel from "./models/UserModel";
-import { createUser } from "./controllers/userController";
+import UserRouter from "./routes/userRoute";
 
 
 
@@ -13,14 +13,17 @@ const app = express();
 app.use(cors());
 app.use(json());
 
+// routes
+app.use("/user", UserRouter);
+
 mongoose.connect(process.env.MONGODB_URI as string).then(val => {
-    // UserModel.create({
-    //     name: "pro",
-    //     email: "amail",
-    //     hash: "chichichi",
-    //     Photo: "noice"
-    // });
-    console.log("connected to mongoDB");
+  // UserModel.create({
+  //     name: "pro",
+  //     email: "amail",
+  //     hash: "chichichi",
+  //     Photo: "noice"
+  // });
+  console.log("connected to mongoDB");
 
 });
 
@@ -28,22 +31,13 @@ mongoose.connect(process.env.MONGODB_URI as string).then(val => {
 // const users = new Map();
 
 app.get("/", (req, res) => {
-    res.send("root");
-});
-app.post("/login", (req, res) => {
-    console.log("req received");
-    console.log(req.body);
-    res.send("done");
-});
-app.post("/signup", (req, res) => {
-    console.log("req received");
-    console.log(req.body);
-    res.send("done");
+  res.send("root");
 });
 
 
-const server = app.listen(3000, () => {
-    console.log("listening");
+
+const server = app.listen(process.env.PORT, () => {
+  console.log("listening");
 });
 
 // const io = new Server(server, {

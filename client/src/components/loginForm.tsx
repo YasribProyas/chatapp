@@ -1,20 +1,24 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { formSubmit } from "../util/formHandler";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { User } from "../interfaces/UserInterface";
+import { useLogin } from "../util/formHandler";
 
-export default function LoginForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const formSubmitCallback = () => {
-    console.log("responded");
-    // setIsSubmitting(true);
-  };
+interface loginFormPropInterface {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}
+export default function LoginForm({ user, setUser }: loginFormPropInterface) {
+  const { signin, isLoading, error } = useLogin();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/");
+    }
+  }, [isLoading]);
+
   return (
-    <form
-      action="login"
-      onSubmit={function (e) {
-        formSubmit(e, formSubmitCallback);
-      }}
-    >
+    <form onSubmit={signin}>
       <h1>Login</h1>
       <div className="label-input-grp">
         <label htmlFor="email-input">Email</label>
@@ -24,13 +28,13 @@ export default function LoginForm() {
         <label htmlFor="password-input">Password</label>
         <input id="password-input" type="password" required name="password" />
       </div>
-      <button type="submit" disabled={isSubmitting}>
+      <button type="submit" disabled={isLoading}>
         Login
       </button>
       <br />
       or
       <br />
-      <button type="submit" disabled={isSubmitting}>
+      <button type="submit" disabled={isLoading}>
         Login as a guest
       </button>
       <p>

@@ -1,7 +1,12 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
+import { User } from "../interfaces/UserInterface";
 
-export default function Chat() {
+interface chatProp {
+  user: User | null;
+}
+
+export default function Chat({ user }: chatProp) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onMsgSend = () => {
