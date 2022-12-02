@@ -11,7 +11,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Chat user={user} />} />
+      <Route path="/" element={<Chat user={user} setUser={setUser} />} />
       <Route
         path="login"
         element={<LoginForm user={user} setUser={setUser} />}

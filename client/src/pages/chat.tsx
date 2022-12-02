@@ -4,9 +4,10 @@ import { User } from "../interfaces/UserInterface";
 
 interface chatProp {
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
-export default function Chat({ user }: chatProp) {
+export default function Chat({ user, setUser }: chatProp) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onMsgSend = () => {

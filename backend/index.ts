@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 
 import UserModel from "./models/UserModel";
 import UserRouter from "./routes/userRoute";
+import RoomModel from "./models/RoomModel";
 
 
 
@@ -30,8 +31,14 @@ mongoose.connect(process.env.MONGODB_URI as string).then(val => {
 // const rooms = new Map();
 // const users = new Map();
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
   res.send("root");
+  const user = await UserModel.findById("638a0055ac8b8169cff024e3");
+
+  if (user) {
+    const room = await RoomModel.createNew(user._id, "chikichiki", user.photo);
+    room.
+  }
 });
 
 
@@ -48,9 +55,9 @@ const server = app.listen(process.env.PORT, () => {
 // io.on('connection', (socket) => {
 //     console.log('a user connected ' + socket.id);
 
-//     socket.on("joinRoom", (userInfo, roomInfo) => {
+//     socket.on("joinRoom", (userPubId, roomPubId) => {
 
-//         console.log(userInfo, "\n", roomInfo);
+//         // console.log(userInfo, "\n", roomInfo);
 
 //         const user = new User(socket.id, userInfo.name, userInfo.url, roomInfo.id);
 
