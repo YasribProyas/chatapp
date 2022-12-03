@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import UserModel from "./models/UserModel";
 import UserRouter from "./routes/userRoute";
 import RoomModel from "./models/RoomModel";
+import messageModel from "./models/messageModel";
 
 
 
@@ -35,10 +36,11 @@ app.get("/", async (req, res) => {
   res.send("root");
   const user = await UserModel.findById("638a0055ac8b8169cff024e3");
 
-  if (user) {
-    const room = await RoomModel.createNew(user._id, "chikichiki", user.photo);
-    room.
-  }
+  // if (user) {
+  //   const room = await RoomModel.createNew(user._id, "chikichiki", user.photo);
+  //   const msg = await messageModel.create({ sent_by: room._id, text: user.name + " created this room" });
+  //   RoomModel.sendMessage(room._id, msg as unknown as (typeof messageModel));
+  // }
 });
 
 
