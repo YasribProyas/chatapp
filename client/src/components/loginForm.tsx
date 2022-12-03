@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User } from "../interfaces/UserInterface";
 import { useLogin } from "../util/formHandler";
 
-interface loginFormPropInterface {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
-}
-export default function LoginForm({ user, setUser }: loginFormPropInterface) {
+// interface loginFormPropInterface {
+//   user: User | null;
+//   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+// }
+export default function LoginForm() {
   const { signin, isLoading, error } = useLogin();
   const navigate = useNavigate();
 

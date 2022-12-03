@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const backendUrl: string = import.meta.env.VITE_BACKEND_URL;
 
@@ -7,6 +8,7 @@ export function useLogin() {
 
     const [error, setError] = useState<Error | null>();
     const [isLoading, setIsLoading] = useState(false);
+    const { dispatch } = useAuthContext();
 
     const signin = async (e: FormEvent) => {
         e.preventDefault();
@@ -32,7 +34,11 @@ export function useLogin() {
         if (userJWT.error) {
             return setError(Error(userJWT.error));
         }
-        if (userJWT.token) localStorage.setItem("user", userJWT.token);
+        if (userJWT.token) {
+            localStorage.setItem("user", userJWT.token);
+            // TODO: make sure to get full user detail from backend
+            dispatch({ type: "LOGIN", payload: userJWT });
+        }
     }
     return { signin, isLoading, error };
 }

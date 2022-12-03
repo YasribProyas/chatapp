@@ -1,0 +1,37 @@
+.chat-app {
+  width: 100%;
+  display: flex;
+
+  .chats {
+    width: 25%;
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0.5rem;
+      border-bottom: 1px solid black;
+      h2 {
+        margin: 0;
+      }
+    }
+    section.chat-rooms {
+      .chat-room {
+        display: flex;
+        align-items: center;
+
+        margin: 0.5rem;
+
+        border: 1px solid black;
+        border-radius: 8px;
+        img {
+          width: 50px;
+          border-right: 1px solid black;
+        }
+        .chat-room-name {
+          margin: 0.5rem;
+        }
+      }
+    }
+  }
+}

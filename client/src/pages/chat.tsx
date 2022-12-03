@@ -1,13 +1,15 @@
+import "./chat.scss";
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
-import { User } from "../interfaces/UserInterface";
+import RoomCard from "./components/roomCard";
+import AuthUser from "../models/AuthUser";
 
 interface chatProp {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  user: AuthUser | null;
+  setUser: React.Dispatch<React.SetStateAction<AuthUser | null>>;
 }
 
-export default function Chat({ user, setUser }: chatProp) {
+export default function Chat() {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const onMsgSend = () => {
@@ -15,11 +17,45 @@ export default function Chat({ user, setUser }: chatProp) {
     if (inputRef.current) inputRef.current.value = "";
   };
 
+  // <Link to="login">Login</Link>
+  //     <br />
+  //     <Link to="signup">Signup</Link>
+
   return (
-    <div>
-      <Link to="login">Login</Link>
-      <br />
-      <Link to="signup">Signup</Link>
+    <main className="chat-app">
+      <aside className="chats">
+        <header>
+          <h2>Chat Room</h2>
+          <Link to="addroom">+</Link>
+        </header>
+        <section className="chat-rooms">
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+        </section>
+      </aside>
 
       <section className="chat-area">
         <div className="messages"></div>
@@ -34,6 +70,6 @@ export default function Chat({ user, setUser }: chatProp) {
         />
         <button onClick={onMsgSend}>send</button>
       </section>
-    </div>
+    </main>
   );
 }

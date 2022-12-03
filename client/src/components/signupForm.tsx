@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User } from "../interfaces/UserInterface";
 import { useSignup } from "../util/formHandler";
 import PhotoRadio from "./photoRadio";
 
-interface signupFormPropInterface {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
-}
+// interface signupFormPropInterface {
+//   user: User | null;
+//   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+// }
 
-export default function SignupForm({ user, setUser }: signupFormPropInterface) {
+export default function SignupForm() {
   const { signup, isLoading, error } = useSignup();
   const navigate = useNavigate();
 
