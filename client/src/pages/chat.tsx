@@ -1,8 +1,11 @@
 import "./chat.scss";
-import React, { useRef } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, Route, Routes } from "react-router-dom";
 import RoomCard from "./components/roomCard";
 import AuthUser from "../models/AuthUser";
+import ChatSection from "./components/chatSection";
+import ChatRoomInfo from "./components/chatRoomInfo";
+import AddRoom from "./components/addRoom";
 
 interface chatProp {
   user: AuthUser | null;
@@ -10,13 +13,6 @@ interface chatProp {
 }
 
 export default function Chat() {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
-  const onMsgSend = () => {
-    console.log(inputRef.current?.value);
-    if (inputRef.current) inputRef.current.value = "";
-  };
-
   // <Link to="login">Login</Link>
   //     <br />
   //     <Link to="signup">Signup</Link>
@@ -57,19 +53,18 @@ export default function Chat() {
         </section>
       </aside>
 
-      <section className="chat-area">
-        <div className="messages"></div>
-        <input
-          ref={inputRef}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") onMsgSend();
-          }}
-          type="text"
-          name="messege-input"
-          id="messege-input"
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <ChatSection />
+              <ChatRoomInfo />
+            </>
+          }
         />
-        <button onClick={onMsgSend}>send</button>
-      </section>
+        <Route path="addroom" element={<AddRoom />} />
+      </Routes>
     </main>
   );
 }

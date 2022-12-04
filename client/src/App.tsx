@@ -12,7 +12,7 @@ function App() {
     <AuthContextProvider>
       <Routes>
         <Route path="/" element={<Navigate to="chat" />} />
-        <Route path="chat" element={<Chat />} />
+        <Route path="chat/*" element={<Chat />} />
         <Route path="login" element={<LoginForm />} />
         <Route path="signup" element={<SignupForm />} />
       </Routes>

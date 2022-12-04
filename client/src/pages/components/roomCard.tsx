@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 
 interface IRoomCard {
@@ -9,7 +8,7 @@ interface IRoomCard {
 
 export default function RoomCard({ name, photo, roomID }: IRoomCard) {
   return (
-    <Link to={"chat/" + roomID}>
+    <Link to={"/chat/" + roomID}>
       <div className="chat-room">
         <img src={photo} alt={name + " group img"} />
         <h4 className="chat-room-name">{name}</h4>
