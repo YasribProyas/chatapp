@@ -1,16 +1,21 @@
 import React, { useRef, useState } from "react";
 import PhotoRadio from "../../components/photoRadio";
+import { useCreateRoom } from "../../util/formHandler";
 
 export default function AddRoom() {
   const [roomId, setRoomId] = useState("");
+  const {
+    createRoom,
+    isLoading: createRoomLoading,
+    error: createRoomError,
+  } = useCreateRoom();
+
   const joinRoom = () => {
     console.log(roomId);
   };
   const createRoomSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    console.log(formData.get("room-name"));
-    console.log(formData.get("photoType"));
+    const roomInfo = createRoom(e);
+    roomInfo.then(console.log);
   };
   return (
     <section>
@@ -48,7 +53,7 @@ export default function AddRoom() {
           />
         </div>
         <label htmlFor="room-name">Room name</label>
-        <input required type="text" name="room-name" id="room-name" />
+        <input required type="text" name="roomName" id="room-name" />
         <button type="submit">Create Room</button>
       </form>
     </section>

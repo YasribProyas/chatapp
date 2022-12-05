@@ -1,6 +1,7 @@
 import Room from "./Room";
 
 export default interface User {
+    error?: string,
     pubid: String,
     name: String,
     email: String,

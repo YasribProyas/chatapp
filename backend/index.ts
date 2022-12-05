@@ -4,10 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv"; dotenv.config();
 import mongoose from "mongoose";
 
-import UserModel from "./models/UserModel";
 import UserRouter from "./routes/userRoute";
-import RoomModel from "./models/RoomModel";
-import messageModel from "./models/messageModel";
+import RoomRouter from "./routes/roomRoute";
 
 
 
@@ -17,6 +15,7 @@ app.use(json());
 
 // routes
 app.use("/user", UserRouter);
+app.use("/room", RoomRouter);
 
 mongoose.connect(process.env.MONGODB_URI as string).then(val => {
   // UserModel.create({
@@ -34,7 +33,7 @@ mongoose.connect(process.env.MONGODB_URI as string).then(val => {
 
 app.get("/", async (req, res) => {
   res.send("root");
-  const user = await UserModel.findById("638a0055ac8b8169cff024e3");
+  // const user = await UserModel.findById("638a0055ac8b8169cff024e3");
 
   // if (user) {
   //   const room = await RoomModel.createNew(user._id, "chikichiki", user.photo);
