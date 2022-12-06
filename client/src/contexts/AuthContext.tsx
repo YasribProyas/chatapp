@@ -1,5 +1,7 @@
-import React, { createContext, useReducer, Dispatch } from "react";
+import React, { createContext, useReducer, Dispatch, useEffect } from "react";
 import AuthUser from "../models/AuthUser";
+
+const backendUrl: string = import.meta.env.VITE_BACKEND_URL;
 
 interface IAuthContextProviderProp {
   children: React.ReactNode;
@@ -25,8 +27,10 @@ export const AuthContext = createContext<UserContextType>(
 export const authReducer = (state: UserState, action: UserAction) => {
   switch (action.type) {
     case "LOGIN":
+      if (action.payload) localStorage.setItem("token", action.payload.token);
       return { user: action.payload };
     case "LOGOUT":
+      localStorage.removeItem("token");
       return { user: null };
     default:
       return state;
@@ -36,6 +40,28 @@ export const authReducer = (state: UserState, action: UserAction) => {
 export const AuthContextProvider = ({ children }: IAuthContextProviderProp) => {
   const [state, dispatch] = useReducer(authReducer, {
     user: null,
+  });
+
+  useEffect(() => {
+    const localUserToken = localStorage.getItem("token");
+    if (localUserToken) {
+      let user: AuthUser;
+      fetch(backendUrl + "user/tkauth", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ token: localUserToken }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          user = res;
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+        });
+    }
   });
 
   console.log("AuthContext state: ", state);
