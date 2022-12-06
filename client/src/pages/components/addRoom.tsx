@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import PhotoRadio from "../../components/photoRadio";
-import { useCreateRoom } from "../../util/formHandler";
+import { useCreateRoom } from "../../hooks/formHandler";
 
 export default function AddRoom() {
   const [roomId, setRoomId] = useState("");

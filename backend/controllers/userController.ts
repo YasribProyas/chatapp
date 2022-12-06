@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 
 const createToken = (_id: string) => jwt.sign({ _id }, process.env.JWT_SECRET as string, { expiresIn: "3d" });
 
-const getUser = async (req: Request, res: Response) => {
+const loginUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) return res.status(400).json({ error: "invalid data" });
@@ -16,7 +16,37 @@ const getUser = async (req: Request, res: Response) => {
     try {
         const user = await UserModel.signin(email, password);
         const token = createToken(user._id.toString());
-        return res.status(200).json({ email, token });
+        const { pubid, name, photo, rooms, is_guest } = user;
+
+        return res.status(200).json({
+            email,
+            token,
+            pubid,
+            name,
+            photo,
+            is_guest,
+            rooms,
+        });
+
+
+    } catch (error) {
+        res.status(400).json({ error: (error as Error).message });
+    }
+}
+
+const getUser = async (req: Request, res: Response) => {
+    const { pubid } = req.body;
+
+    if (!pubid) return res.status(400).json({ error: "invalid data" });
+
+    try {
+        const user = await UserModel.getUserWithPubid(pubid);
+        const { name, photo } = user;
+        return res.status(200).json({
+            pubid,
+            name,
+            photo
+        });
     } catch (error) {
         res.status(400).json({ error: (error as Error).message });
     }
@@ -67,4 +97,4 @@ const deleteGuest = async (id: string) => {
 }
 
 
-export { createUser, getUser, updateUser, deleteGuest };
+export { createUser, getUser, loginUser, updateUser, deleteGuest };

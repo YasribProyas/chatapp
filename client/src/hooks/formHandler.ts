@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { useAuthContext } from "../hooks/useAuthContext";
+import { useAuthContext } from "./useAuthContext";
 import AuthUser from "../models/AuthUser";
 import Room from "../models/Room";
 import User from "../models/User";
@@ -7,6 +7,39 @@ import User from "../models/User";
 
 const backendUrl: string = import.meta.env.VITE_BACKEND_URL;
 
+
+// export function useLoginCheck() {
+
+//     const { dispatch } = useAuthContext();
+//     const [error, setError] = useState<Error | null>();
+//     const [isLoading, setIsLoading] = useState(false);
+
+//     const loginCheck = async () => {
+
+
+//         const user: AuthUser = await fetch(backendUrl + "user/signin", {
+//             method: "POST",
+//             headers: {
+//                 'Accept': 'application/json',
+//                 'Content-type': 'application/json'
+//             },
+//             body: JSON.stringify({ email, password })
+//         })
+//             .then(res => res.json())
+//             .catch(setError)
+//             .finally(() => setIsLoading(false));
+
+
+//         if (user.error) {
+//             return setError(Error(user.error));
+//         }
+//         if (user.token) {
+//             localStorage.setItem("user", user.token);
+//             dispatch({ type: "LOGIN", payload: user });
+//         }
+//     }
+//     return { signin, isLoading, error };
+// }
 
 export function useLogin() {
 
@@ -22,7 +55,7 @@ export function useLogin() {
         const email: string = formData.get("email") as string;
         const password: string = formData.get("password") as string;
 
-        const userJWT: AuthUser = await fetch(backendUrl + "user/signin", {
+        const user: AuthUser = await fetch(backendUrl + "user/signin", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -35,13 +68,11 @@ export function useLogin() {
             .finally(() => setIsLoading(false));
 
 
-        if (userJWT.error) {
-            return setError(Error(userJWT.error));
+        if (user.error) {
+            return setError(Error(user.error));
         }
-        if (userJWT.token) {
-            localStorage.setItem("user", userJWT.token);
-            // TODO: make sure to get full user detail from backend
-            dispatch({ type: "LOGIN", payload: userJWT });
+        if (user.token) {
+            dispatch({ type: "LOGIN", payload: user });
         }
     }
     return { signin, isLoading, error };
@@ -63,7 +94,7 @@ export function useSignup() {
         const password: string = formData.get("password") as string;
         const photoType: string = formData.get("photoType") as string;
 
-        const userJWT: AuthUser = await fetch(backendUrl + "user/signup", {
+        const user: AuthUser = await fetch(backendUrl + "user/signup", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -75,13 +106,12 @@ export function useSignup() {
             .catch(setError)
             .finally(() => setIsLoading(false));
 
-        if (userJWT.error) {
-            return setError(Error(userJWT.error));
+        if (user.error) {
+            return setError(Error(user.error));
         }
-        if (userJWT.token) {
-            localStorage.setItem("user", userJWT.token);
+        if (user.token) {
             // TODO: make sure to get full user detail from backend
-            dispatch({ type: "LOGIN", payload: userJWT });
+            dispatch({ type: "LOGIN", payload: user });
         }
 
     }

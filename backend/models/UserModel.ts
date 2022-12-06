@@ -50,6 +50,11 @@ const UserSchema = new Schema({
             const match = await bcrypt.compare(password, user.hash);
             if (!match) throw Error("Invalid login credentials");
             return user;
+        },
+        async getUserWithPubid(pubid: string) {
+            const user = await this.findOne({ pubid });
+            if (!user) throw Error("Invalid id");
+            return user;
         }
     },
 });

@@ -1,6 +1,9 @@
+import Room from "./Room";
 import User from "./User";
 
 export default interface AuthUser extends User {
-    email: string;
-    token: string;
+    token: string,
+    is_guest: Boolean,
+    email: String,
+    rooms: [Room],
 }
