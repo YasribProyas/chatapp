@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import UserModel from "../models/UserModel";
 import validator from "validator";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 
 const createToken = (_id: string) => jwt.sign({ _id }, process.env.JWT_SECRET as string, { expiresIn: "3d" });
@@ -28,6 +28,30 @@ const loginUser = async (req: Request, res: Response) => {
             rooms,
         });
 
+
+    } catch (error) {
+        res.status(400).json({ error: (error as Error).message });
+    }
+}
+const tokenLogin = async (req: Request, res: Response) => {
+    const { token } = req.body;
+
+    try {
+        const verifiedToken = await jwt.verify(token as string, process.env.JWT_SECRET as string);
+        console.log("🚀 ~ file: userController.ts:40 ~ tokenLogin ~ verifiedToken", verifiedToken);
+        const { _id } = verifiedToken as JwtPayload;
+
+        const user = await UserModel.loginWith_id(_id)
+        const { pubid, email, name, photo, rooms, is_guest } = user;
+
+        return res.status(200).json({
+            email,
+            pubid,
+            name,
+            photo,
+            is_guest,
+            rooms,
+        });
 
     } catch (error) {
         res.status(400).json({ error: (error as Error).message });
@@ -97,4 +121,4 @@ const deleteGuest = async (id: string) => {
 }
 
 
-export { createUser, getUser, loginUser, updateUser, deleteGuest };
+export { createUser, getUser, loginUser, tokenLogin, updateUser, deleteGuest };

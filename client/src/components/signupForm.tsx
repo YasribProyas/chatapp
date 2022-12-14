@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 import { useSignup } from "../hooks/formHandler";
 import PhotoRadio from "./photoRadio";
 
@@ -11,12 +12,13 @@ import PhotoRadio from "./photoRadio";
 export default function SignupForm() {
   const { signup, isLoading, error } = useSignup();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (localStorage.getItem("user")) {
-      navigate("/");
+    if (user) {
+      navigate("/chat");
     }
-  }, [isLoading]);
+  }, [user]);
 
   return (
     <form onSubmit={signup}>

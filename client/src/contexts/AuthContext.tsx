@@ -27,7 +27,8 @@ export const AuthContext = createContext<UserContextType>(
 export const authReducer = (state: UserState, action: UserAction) => {
   switch (action.type) {
     case "LOGIN":
-      if (action.payload) localStorage.setItem("token", action.payload.token);
+      if (action.payload?.token)
+        localStorage.setItem("token", action.payload.token);
       return { user: action.payload };
     case "LOGOUT":
       localStorage.removeItem("token");
@@ -46,7 +47,7 @@ export const AuthContextProvider = ({ children }: IAuthContextProviderProp) => {
     const localUserToken = localStorage.getItem("token");
     if (localUserToken) {
       let user: AuthUser;
-      fetch(backendUrl + "user/tkauth", {
+      fetch(backendUrl + "user/tokenlogin", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -57,12 +58,13 @@ export const AuthContextProvider = ({ children }: IAuthContextProviderProp) => {
         .then((res) => res.json())
         .then((res) => {
           user = res;
+          dispatch({ type: "LOGIN", payload: user });
         })
         .catch(() => {
           localStorage.removeItem("token");
         });
     }
-  });
+  }, []);
 
   console.log("AuthContext state: ", state);
 

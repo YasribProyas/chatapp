@@ -44,11 +44,19 @@ const UserSchema = new Schema({
             return user;
         },
         async signin(email: string, password: string) {
+
+
+
             const user = await this.findOne({ email });
             if (!user) throw Error("Invalid login credentials");
 
             const match = await bcrypt.compare(password, user.hash);
             if (!match) throw Error("Invalid login credentials");
+            return user;
+        },
+        async loginWith_id(dbId: string) {
+            const user = await this.findById(dbId);
+            if (!user) throw Error("Invalid _id");
             return user;
         },
         async getUserWithPubid(pubid: string) {

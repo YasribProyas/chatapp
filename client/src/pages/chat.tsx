@@ -1,11 +1,12 @@
 import "./chat.scss";
-import React from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import RoomCard from "./components/roomCard";
 import AuthUser from "../models/AuthUser";
 import ChatSection from "./components/chatSection";
 import ChatRoomInfo from "./components/chatRoomInfo";
 import AddRoom from "./components/addRoom";
+import { AuthContext } from "../contexts/AuthContext";
 
 interface chatProp {
   user: AuthUser | null;
@@ -13,9 +14,14 @@ interface chatProp {
 }
 
 export default function Chat() {
-  // <Link to="login">Login</Link>
-  //     <br />
-  //     <Link to="signup">Signup</Link>
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
 
   return (
     <main className="chat-app">

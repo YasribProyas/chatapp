@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 import { useLogin } from "../hooks/formHandler";
 
 // interface loginFormPropInterface {
@@ -9,12 +10,13 @@ import { useLogin } from "../hooks/formHandler";
 export default function LoginForm() {
   const { signin, isLoading, error } = useLogin();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (localStorage.getItem("user")) {
+    if (user) {
       navigate("/");
     }
-  }, [isLoading]);
+  }, [user]);
 
   return (
     <form onSubmit={signin}>
