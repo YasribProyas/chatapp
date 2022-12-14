@@ -1,6 +1,6 @@
 import mongoose, { Model, Schema, model } from "mongoose";
 import { nanoid } from "nanoid";
-import messageModel from "./messageModel";
+import { ChatMessage } from "./messageModel";
 import UserModel from "./UserModel";
 
 // interface IRoom {
@@ -43,7 +43,11 @@ const RoomSchema = new Schema({
         type: [mongoose.Types.ObjectId],
     },
     messages: {
-        type: [typeof messageModel],
+        type: [{
+            sent_by: { type: String },
+            text: { type: String },
+            timestamps: { type: Number },
+        }],
     },
 }, {
     timestamps: true,
@@ -52,15 +56,19 @@ const RoomSchema = new Schema({
         async createNew(owner: mongoose.Types.ObjectId, name: string, photo: string) {
             const pubid = nanoid(5);
             const room = await this.create({ pubid, owner, name, photo, members: [owner] });
-            const ownerName = await UserModel.findById(owner);
-            await this.findByIdAndUpdate(room._id, { $push: { messages: messageModel.create({ sent_by: room._id, text: ownerName + " created this room" }) } })
+
+            const ownerObj = await UserModel.findById(owner); if (!ownerObj) throw Error("User not found")
+            await UserModel.joinRoom(room._id, ownerObj?._id);
+
+            const msg = new ChatMessage(room.pubid, ownerObj?.name + " created this room");
+            await room.updateOne({ $push: { messages: msg } })
             return room;
         },
         async joinUser(userId: mongoose.Types.ObjectId, roomId: mongoose.Types.ObjectId) {
             const room = await this.findByIdAndUpdate(roomId, { $push: { members: userId } });
             return room;
         },
-        async sendMessage(roomID: mongoose.Types.ObjectId, message: typeof messageModel) {
+        async sendMessage(roomID: mongoose.Types.ObjectId, message: ChatMessage) {
             return await this.findByIdAndUpdate(roomID, { $push: { messages: message } });
         },
     },
@@ -72,7 +80,7 @@ const RoomSchema = new Schema({
 //     },
 // },
 
-RoomSchema.method("sendMessage", async function sendMessage(message: typeof messageModel) {
+RoomSchema.method("sendMessage", async function sendMessage(message: ChatMessage) {
     await this.updateOne({ $push: { messages: message } });
     return message;
 });

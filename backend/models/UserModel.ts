@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 
@@ -63,6 +63,11 @@ const UserSchema = new Schema({
             const user = await this.findOne({ pubid });
             if (!user) throw Error("Invalid id");
             return user;
+        },
+        async joinRoom(roomId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) {
+            const res = await this.findByIdAndUpdate(userId, { $push: { rooms: roomId } });
+            return res;
+
         }
     },
 });

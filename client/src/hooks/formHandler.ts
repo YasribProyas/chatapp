@@ -129,12 +129,18 @@ export function useCreateRoom() {
 
         const roomName: string = formData.get("roomName") as string;
         const photoType: string = formData.get("photoType") as string;
-
+        const token = localStorage.getItem("token");
+        if (!token) {
+            setIsLoading(false);
+            setError(Error("Please login first"));
+            return;
+        }
         const roomInfo: Room = await fetch(backendUrl + "room/create", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                "Authorization": "Bearer " + token,
             },
             body: JSON.stringify({ roomName, photoType })
         })

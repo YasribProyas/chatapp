@@ -1,18 +1,11 @@
-import mongoose, { Schema, model } from "mongoose";
-
-const UserSchema = new Schema({
-    sent_by: {
-        type: mongoose.Types.ObjectId,
-        required: true
-    },
-    text: {
-        type: String,
-        required: true
-    },
-}, {
-    timestamps: true,
-});
-
-
-
-export default model("Message", UserSchema);
+import mongoose from "mongoose";
+export class ChatMessage {
+    sent_by: string;
+    text: string;
+    timestamps: number;
+    constructor(sent_by: string, text: string) {
+        this.sent_by = sent_by;
+        this.text = text;
+        this.timestamps = Date.now();
+    }
+}
