@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import UserModel from "../models/UserModel";
 import validator from "validator";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import RoomModel from "../models/RoomModel";
 
 
 const createToken = (_id: string) => jwt.sign({ _id }, process.env.JWT_SECRET as string, { expiresIn: "3d" });
@@ -17,6 +18,10 @@ const loginUser = async (req: Request, res: Response) => {
         const user = await UserModel.signin(email, password);
         const token = createToken(user._id.toString());
         const { pubid, name, photo, rooms, is_guest } = user;
+        rooms.map(async (room) => {
+            const roomObj = await RoomModel.findById(room);
+            return roomObj?.pubid;
+        });
 
         return res.status(200).json({
             email,
@@ -38,12 +43,18 @@ const tokenLogin = async (req: Request, res: Response) => {
 
     try {
         const verifiedToken = await jwt.verify(token as string, process.env.JWT_SECRET as string);
-        console.log("🚀 ~ file: userController.ts:40 ~ tokenLogin ~ verifiedToken", verifiedToken);
+        // console.log("🚀 ~ file: userController.ts:40 ~ tokenLogin ~ verifiedToken", verifiedToken);
         const { _id } = verifiedToken as JwtPayload;
 
         const user = await UserModel.loginWith_id(_id)
         const { pubid, email, name, photo, rooms, is_guest } = user;
+        await rooms.map(async (room) => {
+            const roomObj = await RoomModel.findById(room);
+            console.log(roomObj);
 
+            return roomObj?.pubid;
+        });
+        // console.log(rooms);
         return res.status(200).json({
             email,
             pubid,
