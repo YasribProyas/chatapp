@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose from "mongoose";
+import mongoose, { Mongoose, Schema } from "mongoose";
 import UserModel from "../models/UserModel";
 import validator from "validator";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -47,13 +47,42 @@ const tokenLogin = async (req: Request, res: Response) => {
         const { _id } = verifiedToken as JwtPayload;
 
         const user = await UserModel.loginWith_id(_id)
-        const { pubid, email, name, photo, rooms, is_guest } = user;
-        await rooms.map(async (room) => {
-            const roomObj = await RoomModel.findById(room);
-            console.log(roomObj);
+        const { pubid, email, name, photo, is_guest } = user;
 
-            return roomObj?.pubid;
+        /*
+        const roomsPromised = user.rooms.map(async (room: string) => {
+            const roomObj = await RoomModel.findById(room);
+            if (!roomObj) return;
+            // todo: Owner and member has to have actual details.
+            // make another function for that accessible by all
+            const {
+                pubid,
+                owner,
+                name,
+                photo,
+                members,
+                messages,
+            } = roomObj
+            return {
+                pubid,
+                owner,
+                name,
+                photo,
+                members,
+                messages,
+            };
         });
+        */
+
+        const roomsPromised = user.rooms.map(async (room: Schema.Types.ObjectId) => {
+            const roomObj = await RoomModel.findById(room);
+            if (!roomObj) return;
+            // todo: Owner and member has to have actual details.
+            return roomObj.publicRoom
+        });
+
+        const rooms = await Promise.all(roomsPromised);
+
         // console.log(rooms);
         return res.status(200).json({
             email,

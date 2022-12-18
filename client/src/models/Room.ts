@@ -3,10 +3,10 @@ import User from "./User";
 
 export default interface Room {
     error?: string,
-    pubid: String,
-    owner: String,
-    name: String,
-    photo: String,
+    pubid: string,
+    owner: string,
+    name: string,
+    photo: string,
     members: [User],
     messages: [Message]
 }

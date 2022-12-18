@@ -27,9 +27,10 @@ export const AuthContext = createContext<UserContextType>(
 export const authReducer = (state: UserState, action: UserAction) => {
   switch (action.type) {
     case "LOGIN":
-      if (action.payload?.token)
-        localStorage.setItem("token", action.payload.token);
-      return { user: action.payload };
+      const user = action.payload;
+      if (user?.token) localStorage.setItem("token", user.token);
+      if (user?.rooms) user.rooms = user.rooms.filter((room) => !!room);
+      return { user };
     case "LOGOUT":
       localStorage.removeItem("token");
       return { user: null };
@@ -61,6 +62,7 @@ export const AuthContextProvider = ({ children }: IAuthContextProviderProp) => {
           dispatch({ type: "LOGIN", payload: user });
         })
         .catch(() => {
+          return;
           localStorage.removeItem("token");
         });
     }

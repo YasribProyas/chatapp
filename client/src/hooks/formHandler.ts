@@ -123,12 +123,14 @@ export function useCreateRoom() {
     const [isLoading, setIsLoading] = useState(false);
 
     const createRoom = async (e: FormEvent) => {
+
         e.preventDefault();
         setIsLoading(true);
         const formData = new FormData(e.target as HTMLFormElement);
 
         const roomName: string = formData.get("roomName") as string;
         const photoType: string = formData.get("photoType") as string;
+        console.log("create room", roomName);
         const token = localStorage.getItem("token");
         if (!token) {
             setIsLoading(false);

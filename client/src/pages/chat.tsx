@@ -30,38 +30,50 @@ export default function Chat() {
           <h2>Chat Room</h2>
           <Link to="addroom">+</Link>
         </header>
+        {/* <section className="chat-rooms">
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+          <RoomCard
+            name="chiki chiki chat"
+            roomID="chikichikichat"
+            photo="https://robohash.org/Proyas.png?set=set1"
+          />
+        </section> */}
         <section className="chat-rooms">
-          <RoomCard
-            name="chiki chiki chat"
-            roomID="chikichikichat"
-            photo="https://robohash.org/Proyas.png?set=set1"
-          />
-          <RoomCard
-            name="chiki chiki chat"
-            roomID="chikichikichat"
-            photo="https://robohash.org/Proyas.png?set=set1"
-          />
-          <RoomCard
-            name="chiki chiki chat"
-            roomID="chikichikichat"
-            photo="https://robohash.org/Proyas.png?set=set1"
-          />
-          <RoomCard
-            name="chiki chiki chat"
-            roomID="chikichikichat"
-            photo="https://robohash.org/Proyas.png?set=set1"
-          />
-          <RoomCard
-            name="chiki chiki chat"
-            roomID="chikichikichat"
-            photo="https://robohash.org/Proyas.png?set=set1"
-          />
+          {user &&
+            user.rooms.map((room, i) => (
+              <RoomCard
+                name={room.name}
+                roomID={room.pubid}
+                photo={room.photo}
+                key={i}
+              />
+            ))}
         </section>
       </aside>
 
       <Routes>
+        <Route path="/" element={<h1>No rooms</h1>} />
         <Route
-          path="/"
+          path="/:roomId"
           element={
             <>
               <ChatSection />

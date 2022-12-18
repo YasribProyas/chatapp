@@ -5,5 +5,5 @@ export default interface AuthUser extends User {
     token: string,
     is_guest: Boolean,
     email: String,
-    rooms: [Room],
+    rooms: Room[],
 }

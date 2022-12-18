@@ -1,18 +1,91 @@
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import mongoose from "mongoose";
 import RoomModel from "../models/RoomModel";
 import UserModel from "../models/UserModel";
 import { robohash } from "../utils/photoGen";
 
+export async function getAll(req: Request, res: Response) {
+    try {
+        const token = req.header('Authorization')?.replace('Bearer ', ''); if (!token) throw new Error("no token provided");
+        const { roomPubid } = req.body; if (!roomPubid) throw new Error("invalid data");
+        // const { _id } = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload; if (!_id) throw new Error("invalid token");
+
+        const room = await RoomModel.findOne({ pubid: roomPubid }); if (!room) throw new Error("Room not found");
+
+        const { pubid,
+            name,
+            photo,
+            messages
+        } = room;
+
+        // const members = room.members.map(member=>UserModel.getPublicUser(member as mongoose.Types.ObjectId));
+
+        const membersPromised = room.members.map(async (member) => {
+            const memberObj = await UserModel.findById(member);
+            return memberObj?.pubid;
+        });
+
+        const members = await Promise.all(membersPromised);
+
+        res.status(200).json({
+            pubid,
+            name,
+            photo,
+            members,
+            messages
+        });
+
+    } catch (error) {
+        res.status(400).json({ error: (error as Error).message });
+    }
+
+}
+export async function getRoom(req: Request, res: Response) {
+    try {
+        const token = req.header('Authorization')?.replace('Bearer ', ''); if (!token) throw new Error("no token provided");
+        const { roomPubid } = req.body; if (!roomPubid) throw new Error("invalid data");
+        // const { _id } = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload; if (!_id) throw new Error("invalid token");
+
+        const room = await RoomModel.findOne({ pubid: roomPubid }); if (!room) throw new Error("Room not found");
+
+        const { pubid,
+            name,
+            photo,
+            messages
+        } = room;
+
+        // const members = room.members.map(member=>UserModel.getPublicUser(member as mongoose.Types.ObjectId));
+
+        const membersPromised = room.members.map(async (member) => {
+            const memberObj = await UserModel.findById(member);
+            return memberObj?.pubid;
+        });
+
+        const members = await Promise.all(membersPromised);
+
+        res.status(200).json({
+            pubid,
+            name,
+            photo,
+            members,
+            messages
+        });
+
+    } catch (error) {
+        res.status(400).json({ error: (error as Error).message });
+    }
+
+}
 export async function createRoom(req: Request, res: Response) {
     try {
         const token = req.header('Authorization')?.replace('Bearer ', ''); if (!token) throw new Error("no token provided");
         const { roomName, photoType } = req.body; if (!roomName || !photoType) throw new Error("invalid data");
         const { _id } = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload; if (!_id) throw new Error("invalid token");
 
-        const room = await RoomModel.createNew(_id, roomName, robohash(photoType));
+        const room = RoomModel.createNew(_id, roomName, robohash(photoType));
 
-        res.status(200).json(room);
+        res.status(200).json(room.publicRoom);
 
     } catch (error) {
         res.status(400).json({ error: (error as Error).message });

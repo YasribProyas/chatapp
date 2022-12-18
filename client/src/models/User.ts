@@ -1,6 +1,6 @@
 export default interface User {
     error?: string,
-    pubid: String,
-    name: String,
-    photo: String,
+    pubid: string,
+    name: string,
+    photo: string,
 }

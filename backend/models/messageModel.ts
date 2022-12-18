@@ -9,3 +9,9 @@ export class ChatMessage {
         this.timestamps = Date.now();
     }
 }
+
+export type ChatMessageType = {
+    sent_by: string;
+    text: string;
+    timestamps: number;
+}

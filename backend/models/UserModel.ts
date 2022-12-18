@@ -1,8 +1,36 @@
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { Schema, model, Model, Document } from "mongoose";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 
-const UserSchema = new Schema({
+// type Room = Array<mongoose.Types.ObjectId>;
+interface IUser extends Document {
+    pubid: string,
+    name: string,
+    email: string,
+    hash: string,
+    photo: string,
+    is_guest: boolean,
+    rooms: Schema.Types.ObjectId[],
+    //Virtuals
+    publicUser: {
+        pubid: string,
+        name: string,
+        photo: string
+    }
+}
+// interface IUserMethods {
+// }
+
+
+interface UserModel extends Model<IUser> {
+    signup(name: string, email: string, password: string, photo: string, is_guest: boolean): IUser,
+    signin(email: string, password: string): IUser,
+    loginWith_id(dbId: string): IUser,
+    getUserWithPubid(pubid: string): IUser,
+    joinRoom(roomId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId): IUser,
+}
+
+const UserSchema = new Schema<IUser, UserModel>({
     pubid: {
         type: String,
         required: true
@@ -26,9 +54,7 @@ const UserSchema = new Schema({
     is_guest: {
         type: Boolean,
     },
-    rooms: {
-        type: Array,
-    }
+    rooms: Array<Schema.Types.ObjectId>
 }, {
     timestamps: true,
     statics: {
@@ -44,9 +70,6 @@ const UserSchema = new Schema({
             return user;
         },
         async signin(email: string, password: string) {
-
-
-
             const user = await this.findOne({ email });
             if (!user) throw Error("Invalid login credentials");
 
@@ -65,13 +88,36 @@ const UserSchema = new Schema({
             return user;
         },
         async joinRoom(roomId: mongoose.Types.ObjectId, userId: mongoose.Types.ObjectId) {
-            const res = await this.findByIdAndUpdate(userId, { $push: { rooms: roomId } });
-            return res;
-
-        }
+            const user = await this.findByIdAndUpdate(userId, { $push: { rooms: roomId } });
+            return user;
+        },
     },
+    virtuals: {
+        publicUser: {
+            get: function (this: IUser): {
+                pubid: string,
+                name: string,
+                photo: string
+            } {
+                const { pubid, name, photo } = this;
+                return {
+                    pubid,
+                    name,
+                    photo
+                };
+            }
+        },
+    }
+
 });
 
 
+export default model<IUser, UserModel>("User", UserSchema, "users");
 
-export default model("User", UserSchema, "users");
+// const { pubid, name, photo } = this;
+//             return {
+//                 pubid,
+//                 name,
+//                 photo
+//             };
+

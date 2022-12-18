@@ -1,7 +1,15 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
+import MessageCard from "../../components/message";
 
 export default function ChatSection() {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const { user } = useContext(AuthContext);
+  const params = useParams();
+  const selectedRoom = user
+    ? user.rooms.find((room) => room.pubid == params.roomId)
+    : undefined;
 
   const onMsgSend = () => {
     console.log(inputRef.current?.value);
@@ -12,7 +20,13 @@ export default function ChatSection() {
       <header>
         <h2>Chiki chiki chat</h2>
       </header>
-      <div className="messages"></div>
+      {selectedRoom && (
+        <div className="messages">
+          {selectedRoom.messages.map((message, i) => (
+            <MessageCard message={message} key={i} />
+          ))}
+        </div>
+      )}
 
       <div className="message-input-grp">
         <input

@@ -1,28 +1,51 @@
-import mongoose, { Model, Schema, model } from "mongoose";
+import mongoose, { Model, Schema, model, Document } from "mongoose";
 import { nanoid } from "nanoid";
-import { ChatMessage } from "./messageModel";
+import { ChatMessage, ChatMessageType } from "./messageModel";
 import UserModel from "./UserModel";
 
-// interface IRoom {
-//     pubid: String,
-//     owner: typeof mongoose.Types.ObjectId,
-//     name: String,
-//     photo: String,
-//     members: [mongoose.Types.ObjectId],
-//     messages: [typeof messageModel],
-// }
+interface IRoom extends Document {
+    pubid: string,
+    owner: typeof mongoose.Types.ObjectId,
+    name: string,
+    photo: string,
+    members: [mongoose.Types.ObjectId],
+    messages: [ChatMessageType],
+    //virtuals
+    publicRoom: {
+        pubid: string,
+        name: string,
+        photo: string
+        owner: typeof mongoose.Types.ObjectId,
+        members: [mongoose.Types.ObjectId],
+        messages: [ChatMessageType],
+    }
+}
 
 // // Put all Room instance methods in this interface:
 // interface IRoomMethods {
 //     sendMessage(): typeof messageModel;
 // }
+// interface IRoomVirtuals {
+//     publicRoom(): {
+//         pubid: string,
+//         name: string,
+//         photo: string
+//         owner: typeof mongoose.Types.ObjectId,
+//         members: [mongoose.Types.ObjectId],
+//         messages: [ChatMessage],
+//     };
+// }
 
 // // Create a new Model type that knows about IRoomMethods...
-// type RoomModel = Model<IRoom, {}, IRoomMethods>;
+interface RoomModel extends Model<IRoom> {
+    createNew(owner: mongoose.Types.ObjectId, name: string, photo: string): IRoom,
+    joinUser(userId: mongoose.Types.ObjectId, roomId: mongoose.Types.ObjectId): IRoom,
+    sendMessage(roomID: mongoose.Types.ObjectId, message: ChatMessage): IRoom,
+}
 
 
 // const RoomSchema = new Schema<IRoom, RoomModel, IRoomMethods>({
-const RoomSchema = new Schema({
+const RoomSchema = new Schema<IRoom, RoomModel>({
     pubid: {
         type: String,
         required: true
@@ -42,13 +65,7 @@ const RoomSchema = new Schema({
     members: {
         type: [mongoose.Types.ObjectId],
     },
-    messages: {
-        type: [{
-            sent_by: { type: String },
-            text: { type: String },
-            timestamps: { type: Number },
-        }],
-    },
+    messages: Array<ChatMessageType>,
 }, {
     timestamps: true,
     statics:
@@ -58,7 +75,7 @@ const RoomSchema = new Schema({
             const room = await this.create({ pubid, owner, name, photo, members: [owner] });
 
             const ownerObj = await UserModel.findById(owner); if (!ownerObj) throw Error("User not found")
-            await UserModel.joinRoom(room._id, ownerObj?._id);
+            UserModel.joinRoom(room._id, ownerObj?._id);
 
             const msg = new ChatMessage(room.pubid, ownerObj?.name + " created this room");
             await room.updateOne({ $push: { messages: msg } })
@@ -72,7 +89,44 @@ const RoomSchema = new Schema({
             return await this.findByIdAndUpdate(roomID, { $push: { messages: message } });
         },
     },
+    virtuals: {
+        publicRoom: {
+            get: async function (this: IRoom): Promise<{
+                pubid: string;
+                name: string;
+                photo: string;
+                owner: { pubid: string; name: string; photo: string; } | {};
+                members: ({ pubid: string; name: string; photo: string; } | undefined)[];
+                messages: [ChatMessageType];
+            } | undefined> {
+
+                const { pubid,
+                    name,
+                    photo,
+                    messages,
+                } = this;
+
+                const owner = await UserModel.findById(this.owner);
+
+                const promisedMembers = this.members.map(async member => {
+                    const memberObj = await UserModel.findById(member);
+                    return memberObj?.publicUser
+                });
+                const members = await Promise.all(promisedMembers);
+
+                return {
+                    pubid,
+                    owner: owner ? owner.publicUser : {},
+                    name,
+                    photo,
+                    members,
+                    messages,
+                };
+            }
+        },
+    }
 });
+
 // methods: {
 //     async sendMessage(message: typeof messageModel) {
 //         await this.updateOne({ $push: { messages: message } });
@@ -86,5 +140,4 @@ RoomSchema.method("sendMessage", async function sendMessage(message: ChatMessage
 });
 
 
-
-export default model("Room", RoomSchema, "rooms");
+export default model<IRoom, RoomModel>("Room", RoomSchema, "rooms");

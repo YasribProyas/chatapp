@@ -1,6 +1,7 @@
 import express, { json } from "express";
-import { Server } from "socket.io";
+// import { Server } from "socket.io";
 import cors from "cors";
+import moragan from "morgan";
 import dotenv from "dotenv"; dotenv.config();
 import mongoose from "mongoose";
 
@@ -12,20 +13,14 @@ import RoomRouter from "./routes/roomRoute";
 const app = express();
 app.use(cors());
 app.use(json());
+app.use(moragan(":method :url"));
 
 // routes
 app.use("/user", UserRouter);
 app.use("/room", RoomRouter);
 
 mongoose.connect(process.env.MONGODB_URI as string).then(val => {
-  // UserModel.create({
-  //     name: "pro",
-  //     email: "amail",
-  //     hash: "chichichi",
-  //     Photo: "noice"
-  // });
   console.log("connected to mongoDB");
-
 });
 
 // const rooms = new Map();
