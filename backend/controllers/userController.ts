@@ -17,11 +17,15 @@ const loginUser = async (req: Request, res: Response) => {
     try {
         const user = await UserModel.signin(email, password);
         const token = createToken(user._id.toString());
-        const { pubid, name, photo, rooms, is_guest } = user;
-        rooms.map(async (room) => {
+        const { pubid, name, photo, is_guest } = user;
+
+        const roomsPromised = user.rooms.map(async (room: Schema.Types.ObjectId) => {
             const roomObj = await RoomModel.findById(room);
-            return roomObj?.pubid;
+            if (!roomObj) return;
+            // todo: Owner and member has to have actual details.
+            return roomObj.publicRoom
         });
+        const rooms = await Promise.all(roomsPromised);
 
         return res.status(200).json({
             email,
@@ -97,7 +101,6 @@ const tokenLogin = async (req: Request, res: Response) => {
         res.status(400).json({ error: (error as Error).message });
     }
 }
-
 const getUser = async (req: Request, res: Response) => {
     const { pubid } = req.body;
 
@@ -115,7 +118,6 @@ const getUser = async (req: Request, res: Response) => {
         res.status(400).json({ error: (error as Error).message });
     }
 }
-
 const createUser = async (req: Request, res: Response) => {
     const { name, email, password, photoType, is_guest } = req.body;
     console.log(req.body);
@@ -138,7 +140,6 @@ const createUser = async (req: Request, res: Response) => {
         res.status(400).json({ error: (error as Error).message });
     }
 }
-
 const updateUser = async (req: Request, res: Response) => {
     const { id } = req.body
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -150,7 +151,6 @@ const updateUser = async (req: Request, res: Response) => {
 
     res.status(200).json(user);
 }
-
 const deleteUser = (id: string) => {
     UserModel.findByIdAndDelete(id).catch(() => { throw Error("unable to delete user: " + id) });
 }

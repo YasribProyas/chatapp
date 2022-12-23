@@ -13,7 +13,7 @@ export default function LoginForm() {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user) {
+    if (user && !user.error) {
       navigate("/");
     }
   }, [user]);

@@ -8,9 +8,19 @@ interface IAppLoginCheckProp {
 export default function AppLoginCheck({ children }: IAppLoginCheckProp) {
   const { user } = useContext(AuthContext);
 
-  return !user && localStorage.getItem("token") ? (
-    <h1>Loading</h1>
-  ) : (
-    <>{children}</>
-  );
+  if (!user) {
+    if (localStorage.getItem("token")) {
+      return <h1>Loading</h1>;
+    }
+    return <>{children}</>;
+  }
+  if (user.error) {
+    localStorage.removeItem("token");
+  }
+  return <>{children}</>;
+  // return !user && localStorage.getItem("token") ? (
+  //   <h1>Loading</h1>
+  // ) : (
+  //   <>{children}</>
+  // );
 }

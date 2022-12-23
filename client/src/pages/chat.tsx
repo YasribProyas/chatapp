@@ -18,7 +18,7 @@ export default function Chat() {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!user) {
+    if (!user || user.error) {
       navigate("/login");
     }
   }, [user]);
@@ -58,7 +58,7 @@ export default function Chat() {
           />
         </section> */}
         <section className="chat-rooms">
-          {user &&
+          {user?.rooms &&
             user.rooms.map((room, i) => (
               <RoomCard
                 name={room.name}

@@ -15,7 +15,7 @@ export default function SignupForm() {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (user) {
+    if (user && !user.error) {
       navigate("/chat");
     }
   }, [user]);

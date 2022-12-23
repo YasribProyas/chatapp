@@ -59,6 +59,7 @@ export const AuthContextProvider = ({ children }: IAuthContextProviderProp) => {
         .then((res) => res.json())
         .then((res) => {
           user = res;
+          if (user.error) localStorage.removeItem("token");
           dispatch({ type: "LOGIN", payload: user });
         })
         .catch(() => {
