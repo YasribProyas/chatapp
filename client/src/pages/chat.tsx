@@ -1,6 +1,7 @@
 import "./chat.scss";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { io, Socket } from "socket.io-client";
 import RoomCard from "./components/roomCard";
 import AuthUser from "../models/AuthUser";
 import ChatSection from "./components/chatSection";
@@ -14,6 +15,10 @@ interface chatProp {
 }
 
 export default function Chat() {
+  const backendUrl: string = import.meta.env.VITE_BACKEND_URL;
+
+  const [socket, setSocket] = useState<Socket | null>(null);
+
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
@@ -22,6 +27,15 @@ export default function Chat() {
       navigate("/login");
     }
   }, [user]);
+
+  useEffect(() => {
+    const newSocket = io(backendUrl);
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, [setSocket]);
 
   return (
     <main className="chat-app">

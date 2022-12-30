@@ -23,7 +23,7 @@ export default function ChatSection() {
       {selectedRoom && (
         <div className="messages">
           {selectedRoom.messages.map((message, i) => (
-            <MessageCard message={message} key={i} />
+            <MessageCard message={message} room={selectedRoom} key={i} />
           ))}
         </div>
       )}

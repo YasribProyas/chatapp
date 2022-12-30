@@ -1,0 +1,39 @@
+.message {
+  margin: 1rem;
+  border-radius: 1rem;
+  border: 1px solid black;
+  display: flex;
+
+  &.room {
+    background-color: gray;
+    justify-content: center;
+    .msg-sender {
+      display: none;
+    }
+    .msg-txt {
+      color: aliceblue;
+    }
+  }
+  &.self {
+    background-color: purple;
+    justify-content: right;
+    .msg-sender {
+      /* display: none; */
+    }
+    .msg-txt {
+      /* text-align: ; */
+      /* color: aliceblue; */
+    }
+  }
+  &.other {
+    background-color: white;
+    justify-content: right;
+    .msg-sender {
+      /* display: none; */
+    }
+    .msg-txt {
+      /* text-align: ; */
+      /* color: aliceblue; */
+    }
+  }
+}
