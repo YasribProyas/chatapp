@@ -7,6 +7,8 @@ import mongoose from "mongoose";
 
 import UserRouter from "./routes/userRoute";
 import RoomRouter from "./routes/roomRoute";
+import { sendMessage } from "./socketioControllers/message";
+import { userIdentify } from "./socketioControllers/user";
 
 
 
@@ -23,14 +25,9 @@ mongoose.connect(process.env.MONGODB_URI as string).then(val => {
   console.log("connected to mongoDB");
 });
 
-// const rooms = new Map();
-// const users = new Map();
-
 app.get("/", async (req, res) => {
   res.send("root");
 });
-
-
 
 const server = app.listen(process.env.PORT, () => {
   console.log("listening");
@@ -44,6 +41,11 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
   console.log('a user connected ' + socket.id);
+
+
+  socket.on("message:send", sendMessage);
+  socket.on("user:identify", userIdentify);
+
 
   // socket.on("joinRoom", (userPubId, roomPubId) => {
 

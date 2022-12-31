@@ -31,7 +31,12 @@ export default function Chat() {
   useEffect(() => {
     const newSocket = io(backendUrl);
     setSocket(newSocket);
-
+    newSocket.on("connect", () => {
+      newSocket.emit("user:identify", {
+        token: localStorage.getItem("token"),
+        socketId: newSocket.id,
+      });
+    });
     return () => {
       newSocket.close();
     };
@@ -90,7 +95,7 @@ export default function Chat() {
           path="/:roomId"
           element={
             <>
-              <ChatSection />
+              <ChatSection socket={socket} />
               <ChatRoomInfo />
             </>
           }

@@ -23,7 +23,7 @@ const loginUser = async (req: Request, res: Response) => {
             const roomObj = await RoomModel.findById(room);
             if (!roomObj) return;
             // todo: Owner and member has to have actual details.
-            return roomObj.publicRoom
+            return roomObj.publicRoom;
         });
         const rooms = await Promise.all(roomsPromised);
 

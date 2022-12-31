@@ -9,6 +9,7 @@ export default function ChatRoomInfo() {
   const selectedRoom = user
     ? user.rooms.find((room) => room.pubid == params.roomId)
     : undefined;
+
   return selectedRoom ? (
     <aside className="chat-room-info">
       <header>

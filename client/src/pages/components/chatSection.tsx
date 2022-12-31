@@ -1,11 +1,16 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useReducer, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext";
+import { AuthContext, authReducer } from "../../contexts/AuthContext";
 import MessageCard from "../../components/message";
+import { Socket } from "socket.io-client";
+import Message from "../../models/Message";
+interface IChatSectionProp {
+  socket: Socket | null;
+}
 
-export default function ChatSection() {
+export default function ChatSection({ socket }: IChatSectionProp) {
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const { user } = useContext(AuthContext);
+  const { user, dispatch } = useContext(AuthContext);
   const params = useParams();
   const selectedRoom = user
     ? user.rooms.find((room) => room.pubid == params.roomId)
@@ -13,8 +18,49 @@ export default function ChatSection() {
 
   const onMsgSend = () => {
     console.log(inputRef.current?.value);
+
+    if (user && inputRef.current?.value) {
+      socket?.emit("message:send", {
+        message: {
+          sent_by: user.pubid,
+          text: inputRef.current.value,
+          time: new Date(),
+        } as Message,
+        sent_to: params.roomId,
+      });
+
+      socket?.on("message:receieve", (message: Message, sent_to: string) => {
+        // console.log("yeah boi");
+        const targetRooms = user.rooms;
+        const targetRoom = targetRooms.find((room) => room.pubid == sent_to);
+        if (targetRoom) {
+          const messages = [...targetRoom.messages, message];
+          //! fix this
+          console.log(
+            Object.assign(user, {
+              rooms: [
+                ...targetRooms.filter((room) => room.pubid != sent_to),
+                Object.assign(targetRoom, { messages }),
+              ],
+            })
+          );
+
+          dispatch({
+            type: "MSG_RCV",
+            payload: Object.assign(user, {
+              rooms: [
+                ...targetRooms.filter((room) => room.pubid != sent_to),
+                Object.assign(targetRoom, { messages }),
+              ],
+            }),
+          });
+        }
+        console.log(user.rooms);
+      });
+    }
     if (inputRef.current) inputRef.current.value = "";
   };
+
   return (
     <section className="chat-area">
       <header>
