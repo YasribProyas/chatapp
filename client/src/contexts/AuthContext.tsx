@@ -11,7 +11,7 @@ type UserState = {
   user: AuthUser | null;
 };
 type UserAction = {
-  type: "LOGIN" | "LOGOUT" | "MSG_RCV";
+  type: "LOGIN" | "LOGOUT";
   payload: AuthUser | null;
 };
 
@@ -34,8 +34,6 @@ export const authReducer = (state: UserState, action: UserAction) => {
     case "LOGOUT":
       localStorage.removeItem("token");
       return { user: null };
-    case "MSG_RCV":
-      return { user: action.payload };
     default:
       return state;
   }
