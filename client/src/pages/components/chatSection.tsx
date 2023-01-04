@@ -1,4 +1,5 @@
 import React, {
+  ReactNode,
   useContext,
   useEffect,
   useReducer,
@@ -15,6 +16,9 @@ interface IChatSectionProp {
 }
 
 export default function ChatSection({ socket }: IChatSectionProp) {
+  const backendUrl: string = import.meta.env.VITE_BACKEND_URL;
+  const msgEndRef = useRef<HTMLDivElement | null>(null);
+
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { user, dispatch } = useContext(AuthContext);
   const params = useParams();
@@ -24,23 +28,39 @@ export default function ChatSection({ socket }: IChatSectionProp) {
 
   const [messages, setMessages] = useState<Message[]>([]);
   useEffect(() => {
+    // if (!selectedRoom) return;
     setMessages(selectedRoom?.messages || []);
 
-    // todo if this does not work try taking it outside the scope
-    const res = socket?.on(
-      "message:receieve",
-      ({ message, sent_to }: { message: Message; sent_to: string }) => {
-        if (sent_to == selectedRoom?.pubid) {
-          setMessages((oldMsg) => [...oldMsg, message]);
-          console.log("it should happen");
-        }
-      }
-    );
+    fetch(backendUrl + "room/get20", {
+      method: "POST",
+      body: JSON.stringify({ roomPubid: selectedRoom?.pubid }),
+    })
+      .then((res) => res.json())
+      .then((msgs) => {
+        console.log(msgs);
 
-    // console.log(res?.off());
+        setMessages(msgs);
+
+        // todo if this does not work try taking it outside the scope
+      });
+
+    const msgRcvListener = ({
+      message,
+      sent_to,
+    }: {
+      message: Message;
+      sent_to: string;
+    }) => {
+      if (sent_to == selectedRoom?.pubid) {
+        setMessages((oldMsg) => [...oldMsg, message]);
+        // console.log("msg recieved", message);
+        msgEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+    const skt = socket?.on("message:receieve", msgRcvListener);
 
     return () => {
-      res?.off("message:receieve");
+      skt?.off("message:receieve", msgRcvListener);
     };
   }, [selectedRoom]);
 
@@ -59,32 +79,53 @@ export default function ChatSection({ socket }: IChatSectionProp) {
     }
     if (inputRef.current) inputRef.current.value = "";
   };
+  const joinRoom = () => {
+    fetch(backendUrl + "room/join", {
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      method: "POST",
+      body: JSON.stringify({ roomPubId: params.roomId }),
+    }).then(() => {
+      window.location.reload();
+    });
+  };
 
   return (
     <section className="chat-area">
       <header>
         <h2>Chiki chiki chat</h2>
       </header>
-      {selectedRoom && (
-        <div className="messages">
-          {messages.map((message, i) => (
-            <MessageCard message={message} room={selectedRoom} key={i} />
-          ))}
-        </div>
-      )}
+      {selectedRoom ? (
+        <>
+          <div className="messages">
+            {messages.map((message, i) => (
+              <MessageCard message={message} room={selectedRoom} key={i} />
+            ))}
+            <div ref={msgEndRef} className="scroll-landmark"></div>
+          </div>
 
-      <div className="message-input-grp">
-        <input
-          ref={inputRef}
-          onKeyUp={(e) => {
-            if (e.key === "Enter") onMsgSend();
-          }}
-          type="text"
-          name="messege-input"
-          id="messege-input"
-        />
-        <button onClick={onMsgSend}>Send</button>
-      </div>
+          <div className="message-input-grp">
+            <input
+              ref={inputRef}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") onMsgSend();
+              }}
+              type="text"
+              name="messege-input"
+              id="messege-input"
+            />
+            <button onClick={onMsgSend}>Send</button>
+          </div>
+        </>
+      ) : (
+        <>
+          <h4>Yo are not joined in the room</h4>
+          <button onClick={joinRoom}>join</button>
+        </>
+      )}
     </section>
   );
 }

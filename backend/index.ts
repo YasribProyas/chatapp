@@ -33,7 +33,7 @@ const server = app.listen(process.env.PORT, () => {
   console.log("listening");
 });
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: "*"
   }

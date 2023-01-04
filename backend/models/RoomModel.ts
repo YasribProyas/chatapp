@@ -134,10 +134,10 @@ const RoomSchema = new Schema<IRoom, RoomModel>({
 //     },
 // },
 
-RoomSchema.method("sendMessage", async function sendMessage(message: ChatMessage) {
-    await this.updateOne({ $push: { messages: message } });
-    return message;
-});
+// RoomSchema.method("sendMessage", async function sendMessage(message: ChatMessage) {
+//     await this.updateOne({ $push: { messages: message } });
+//     return message;
+// });
 
 
 export default model<IRoom, RoomModel>("Room", RoomSchema, "rooms");

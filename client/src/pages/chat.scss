@@ -58,7 +58,11 @@
       // height: calc(
       //   98vh - $input-grp-height - $input-grp-padding - $header-padding
       // );
+      overflow-y: scroll;
       flex-grow: 1;
+    }
+    .scroll-landmark {
+      height: 30px;
     }
     .message-input-grp {
       // width: 100%;

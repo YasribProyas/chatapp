@@ -126,7 +126,7 @@ const createUser = async (req: Request, res: Response) => {
     if (!name || !email || !password || !photoType) return res.status(400).json({ error: "invalid data" });
     if (!validator.isEmail(email)) return res.status(400).json({ error: "invalid email" });
 
-    const photo = "robohash.org/" + name + ".png?set=set" + photoType;
+    const photo = "https://robohash.org/" + name + ".png?set=set" + photoType;
 
     if (is_guest) {
         // TODO: implement guest login
