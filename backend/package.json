@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --build",
-    "start": "node .",
+    "build": "tsc --outDir ./public",
+    "start": "node ./public",
     "dev": "nodemon index.ts"
   },
   "engines": {
