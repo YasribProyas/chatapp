@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc index.ts --outDir ./dist",
+    "build": "tsc --outDir ./dist",
     "dev": "nodemon index.ts"
   },
   "keywords": [],
