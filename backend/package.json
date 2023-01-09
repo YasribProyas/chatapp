@@ -8,9 +8,6 @@
     "start": "node ./public",
     "dev": "nodemon index.ts"
   },
-  "engines": {
-    "node": "16.x"
-  },
   "keywords": [],
   "author": "github.com/Proyas21",
   "license": "ISC",
