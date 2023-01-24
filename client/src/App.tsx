@@ -16,9 +16,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="chat" />} />
-          <Route path="chat/*" element={<Chat />} />
-          <Route path="login" element={<LoginForm />} />
-          <Route path="signup" element={<SignupForm />} />
+          <Route path="/chat/*" element={<Chat />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/signup" element={<SignupForm />} />
         </Routes>
       </BrowserRouter>
       {/* </AppLoginCheck> */}
