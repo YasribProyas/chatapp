@@ -19,6 +19,7 @@ function App() {
           <Route path="/chat/*" element={<Chat />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignupForm />} />
+          <Route path="*" element={<h1>Not found</h1>} />
         </Routes>
       </BrowserRouter>
       {/* </AppLoginCheck> */}
