@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AuthContext, authReducer } from "../../contexts/AuthContext";
 import MessageCard from "../../components/message";
 import { Socket } from "socket.io-client";
@@ -27,6 +27,14 @@ export default function ChatSection({ socket }: IChatSectionProp) {
     : undefined;
 
   const [messages, setMessages] = useState<Message[]>([]);
+  
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if (!user || user.error) {
+  //     navigate("/login");
+  //   }
+  // }, [user]);
+
   useEffect(() => {
     // if (!selectedRoom) return;
     setMessages(selectedRoom?.messages || []);

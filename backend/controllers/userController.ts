@@ -43,7 +43,7 @@ const loginUser = async (req: Request, res: Response) => {
     }
 }
 const tokenLogin = async (req: Request, res: Response) => {
-    const { token } = req.body;
+    const { token } = req.body ;
 
     try {
         const verifiedToken = await jwt.verify(token as string, process.env.JWT_SECRET as string);

@@ -8,27 +8,28 @@ import { useLogin } from "../hooks/formHandler";
 //   setUser: React.Dispatch<React.SetStateAction<User | null>>;
 // }
 export default function LoginForm() {
-  const { signin, isLoading, error } = useLogin();
+  const { signin, isLoading, error, setError } = useLogin();
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (user && !user.error) {
-      navigate("/");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user && !user.error) {
+  //     navigate("/");
+  //   }
+  // }, [user]);
 
   return (
     <form onSubmit={signin}>
       <h1>Login</h1>
       <div className="label-input-grp">
         <label htmlFor="email-input">Email</label>
-        <input id="email-input" type="email" required name="email" />
+        <input id="email-input" type="email" required name="email" onChange={()=>setError(null)} />
       </div>
       <div className="label-input-grp">
         <label htmlFor="password-input">Password</label>
-        <input id="password-input" type="password" required name="password" />
+        <input id="password-input" type="password" required name="password" onChange={()=>setError(null)} />
       </div>
+      {error && <p>{error.message}</p>}
       <button type="submit" disabled={isLoading}>
         Login
       </button>
@@ -38,10 +39,6 @@ export default function LoginForm() {
       <button type="submit" disabled={isLoading}>
         Login as a guest
       </button>
-      <p>
-        Don't have an account?
-        <Link to="/signup">Signup</Link>
-      </p>
     </form>
   );
 }

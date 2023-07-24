@@ -8,6 +8,8 @@ import ChatSection from "./components/chatSection";
 import ChatRoomInfo from "./components/chatRoomInfo";
 import AddRoom from "./components/addRoom";
 import { AuthContext } from "../contexts/AuthContext";
+import LoginForm from "../components/loginForm";
+import AuthCard from "../components/AuthCard";
 
 interface chatProp {
   user: AuthUser | null;
@@ -22,11 +24,11 @@ export default function Chat() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (!user || user.error) {
-      navigate("/login");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user || user.error) {
+  //     navigate("/login");
+  //   }
+  // }, [user]);
 
   useEffect(() => {
     const newSocket = io(backendUrl);
@@ -43,7 +45,9 @@ export default function Chat() {
   }, [setSocket]);
 
   return (
-    <main className="chat-app">
+    (!user || user.error) 
+    ? <AuthCard/>
+    : <main className="chat-app">
       <aside className="chats">
         <header>
           <h2>Chat Room</h2>

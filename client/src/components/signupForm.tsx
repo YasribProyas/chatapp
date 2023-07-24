@@ -14,11 +14,11 @@ export default function SignupForm() {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
 
-  useEffect(() => {
-    if (user && !user.error) {
-      navigate("/chat");
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user && !user.error) {
+  //     navigate("/chat");
+  //   }
+  // }, [user]);
 
   return (
     <form onSubmit={signup}>
@@ -59,10 +59,7 @@ export default function SignupForm() {
       <button type="submit" disabled={isLoading}>
         Next
       </button>
-      <p>
-        Already have an account?
-        <Link to="/login">Login</Link>
-      </p>
+
     </form>
   );
 }

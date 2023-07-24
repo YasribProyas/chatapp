@@ -75,7 +75,7 @@ export function useLogin() {
             dispatch({ type: "LOGIN", payload: user });
         }
     }
-    return { signin, isLoading, error };
+    return { signin, isLoading, error, setError };
 }
 
 export function useSignup() {
