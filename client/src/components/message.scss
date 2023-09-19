@@ -1,12 +1,18 @@
 .message {
+  width: fit-content;
   margin: 1rem;
+  padding: .5rem;
   border-radius: 1rem;
   border: 1px solid black;
   display: flex;
+  gap: .5rem;
+  flex-direction: column;
 
   &.room {
     background-color: gray;
+    border-color: rgb(100, 100, 100);
     justify-content: center;
+    margin: auto;
     .msg-sender {
       display: none;
     }
@@ -15,9 +21,14 @@
     }
   }
   &.self {
-    background-color: rgb(255, 4, 255);
-    justify-content: right;
+    color: white;
+    background-color: rgb(103, 115, 223);
+    border-color: rgb(68, 82, 212);
+    // justify-content: right;
+    margin-left: auto;
+    text-align: right;
     .msg-sender {
+      color: rgb(168, 215, 253);
       /* display: none; */
     }
     .msg-txt {
@@ -26,9 +37,10 @@
     }
   }
   &.other {
-    background-color: white;
+    background-color: rgb(241, 241, 241);
+    border-color: rgb(228, 228, 228) ;
     justify-content: left;
-    flex-direction: row-reverse;
+    // flex-direction: row-reverse;
     .msg-sender {
       /* display: none; */
     }

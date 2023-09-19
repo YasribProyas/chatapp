@@ -4,19 +4,19 @@ import SignupForm from './signupForm'
 
 export default function AuthCard() {
 
-    const [login, setLogin] = useState(true)
+    const [loginF, setLoginF] = useState(true)
 
-  return login
+  return loginF
         ?   <div>
                 <LoginForm/>
-                <p>Don't have an account?
-                <button onClick={()=>setLogin(false)}>Signup</button>
+                <p className='lsButton'>Don't have an account?
+                    <button onClick={()=>setLoginF(false)}>Signup</button>
                 </p>
             </div>
         :   <div>
                 <SignupForm/>
-                <p>Already have an account?
-                <button onClick={()=>setLogin(true)}>Login</button>
+                <p className='lsButton'>Already have an account?
+                    <button onClick={()=>setLoginF(true)}>Login</button>
                 </p>
             </div>
     

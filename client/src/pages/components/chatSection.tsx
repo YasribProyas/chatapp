@@ -37,20 +37,40 @@ export default function ChatSection({ socket }: IChatSectionProp) {
 
   useEffect(() => {
     // if (!selectedRoom) return;
+  
     setMessages(selectedRoom?.messages || []);
 
-    fetch(backendUrl + "room/get20", {
+    fetch(backendUrl + "room/getAll", {
+      
       method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
       body: JSON.stringify({ roomPubid: selectedRoom?.pubid }),
     })
       .then((res) => res.json())
-      .then((msgs) => {
-        console.log(msgs);
+      .then((roomAll) => {
+        console.log(roomAll);
 
-        setMessages(msgs);
+        setMessages(roomAll.messages);
 
         // todo if this does not work try taking it outside the scope
       });
+    // fetch(backendUrl + "room/get20", {
+    //   method: "POST",
+    //   body: JSON.stringify({ roomPubid: selectedRoom?.pubid }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((msgs) => {
+    //     console.log(msgs);
+
+    //     setMessages(msgs);
+
+    //     // todo if this does not work try taking it outside the scope
+    //   });
+
 
     const msgRcvListener = ({
       message,
@@ -103,11 +123,11 @@ export default function ChatSection({ socket }: IChatSectionProp) {
 
   return (
     <section className="chat-area">
-      <header>
-        <h2>Chiki chiki chat</h2>
-      </header>
       {selectedRoom ? (
         <>
+        <header>
+          <h2>{selectedRoom.name}</h2>
+        </header>
           <div className="messages">
             {messages.map((message, i) => (
               <MessageCard message={message} room={selectedRoom} key={i} />
@@ -130,7 +150,7 @@ export default function ChatSection({ socket }: IChatSectionProp) {
         </>
       ) : (
         <>
-          <h4>Yo are not joined in the room</h4>
+          <h4>You are not joined in the room</h4>
           <button onClick={joinRoom}>join</button>
         </>
       )}

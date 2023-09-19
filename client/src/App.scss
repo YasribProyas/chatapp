@@ -45,6 +45,12 @@ form {
       margin: 4px;
     }
   }
+  .error-log{
+    color: crimson;
+    // font-weight: bol;
+    font-style: italic;
+    margin: 1rem;
+  }
   input[type="text"],
   input[type="password"],
   input[type="email"] {
@@ -75,7 +81,7 @@ form {
 
   .label-input-grp {
     text-align: start;
-    margin-bottom: 1rem;
+    margin: 1rem;
   }
   .label-radio-grp {
     display: flex;
@@ -84,4 +90,10 @@ form {
   .radio-group {
     display: flex;
   }
+
+}
+
+.lsButton {
+  text-align: center;
+  margin: 18px;
 }

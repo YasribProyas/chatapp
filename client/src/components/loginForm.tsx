@@ -29,7 +29,7 @@ export default function LoginForm() {
         <label htmlFor="password-input">Password</label>
         <input id="password-input" type="password" required name="password" onChange={()=>setError(null)} />
       </div>
-      {error && <p>{error.message}</p>}
+      {error && <p className="error-log">{error.message}</p>}
       <button type="submit" disabled={isLoading}>
         Login
       </button>

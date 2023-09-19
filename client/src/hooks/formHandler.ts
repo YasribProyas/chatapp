@@ -50,6 +50,7 @@ export function useLogin() {
     const signin = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
+        setError(null)
         const formData = new FormData(e.target as HTMLFormElement);
 
         const email: string = formData.get("email") as string;
